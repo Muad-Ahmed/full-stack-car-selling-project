@@ -5,13 +5,10 @@
     @endphp
     <x-card :$color :$bgColor class="card-rounded">
         {{--    <x-card :color="$color" :bgColor="$bgColor"> --}}
-        <x-slot:title class="card-header-blue">Card title 1</x-slot>
-        Card Content 1
-        <x-slot:footer>Card footer 1</x-slot>
+        <x-slot:title class="card-header-blue"></x-slot>
+
+        <x-slot:footer></x-slot>
     </x-card>
-    <x-test-component class="card">
-        Lorem ipsum dolor sit amet
-    </x-test-component>
     <!-- Home Slider -->
     <section class="hero-slider">
         <!-- Carousel wrapper -->
