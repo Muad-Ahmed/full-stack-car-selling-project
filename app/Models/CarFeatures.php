@@ -11,6 +11,8 @@ class CarFeatures extends Model
 
     public $timestamps = false;
 
+    protected $primaryKey = 'car_id';
+
     protected $fillable = [
         'car_id',
         'abs',
