@@ -16,6 +16,6 @@ class CarType extends Model
 
     public function cars(): HasMany
     {
-        return $this->hasMany(Car::class, 'car_type_id'); // car_type_id is optional
+        return $this->hasMany(Car::class);
     }
 }
