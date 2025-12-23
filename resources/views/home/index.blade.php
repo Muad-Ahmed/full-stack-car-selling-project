@@ -1,5 +1,5 @@
 <x-app-layout title="Home Page">
-    
+
     <!-- Home Slider -->
     <section class="hero-slider">
         <!-- Carousel wrapper -->
@@ -75,13 +75,13 @@
             <div class="container">
                 <h2>Latest Added Cars</h2>
                 <div class="car-items-listing">
-                    @for ($i = 0; $i < 12; $i++)
-                        <x-car-item />
-                    @endfor
+                    @foreach ($cars as $car)
+                        <x-car-item :$car />
+                    @endforeach
                 </div>
             </div>
         </section>
         <!--/ New Cars -->
     </main>
-   
+
 </x-app-layout>
