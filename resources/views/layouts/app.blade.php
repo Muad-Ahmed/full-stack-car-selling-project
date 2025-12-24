@@ -1,4 +1,4 @@
-@props(['title' => '', 'footerLinks' => ''])
+@props(['title' => '','bodyClass' => null, 'footerLinks' => ''])
 
 <x-base-layout :$title>
     <x-layouts.header />
