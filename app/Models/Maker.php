@@ -21,8 +21,8 @@ class Maker extends Model
 
     public function models(): HasMany
     {
-        return $this->hasMany(Model::class);
+        // It should ba \App\Models\Model to prevent intersection
+        // between Model.php and original Laravel Eloquent\Model
+        return $this->hasMany(\App\Models\Model::class);
     }
-
-
 }
