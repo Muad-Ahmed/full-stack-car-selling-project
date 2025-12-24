@@ -64,7 +64,7 @@ class Car extends Model
 
     public function model(): BelongsTo
     {
-        return $this->belongsTo(Model::class);
+        return $this->belongsTo(\App\Models\Model::class);
     }
 
     public function owner(): BelongsTo
@@ -85,6 +85,5 @@ class Car extends Model
     public function getCreateDate(): string
     {
         return (new Carbon($this->created_at))->format('Y-m-d');
-
     }
 }
