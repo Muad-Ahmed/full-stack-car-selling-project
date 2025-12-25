@@ -79,12 +79,11 @@ class CarController extends Controller
             ->with(['primaryImage', 'city', 'carType', 'fuelType', 'maker', 'model'])
             ->orderBy('published_at', 'desc');
 
-        // Get total count of the cars
         $carCount = $query->count();
-        // Select 30 cars
-        $cars = $query->limit(30)->get();
 
-        return view('car.search',  ['cars' => $cars, 'carCount' => $carCount]);
+        $cars = $query->paginate(15);
+
+        return view('car.search',  ['cars' => $cars]);
     }
 
 
