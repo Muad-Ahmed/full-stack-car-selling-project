@@ -414,7 +414,7 @@
                                 <x-car-item :$car />
                             @endforeach
                         </div>
-                        {{ $cars->links() }}
+                        {{ $cars->onEachSide(1)->links('pagination') }}
                     </div>
                 </div>
             </div>
