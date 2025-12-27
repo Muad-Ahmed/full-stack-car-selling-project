@@ -10,9 +10,7 @@
                     <x-select-model />
                 </div>
                 <div>
-                    <select>
-                        <option value="">State/Region</option>
-                    </select>
+                    <x-select-state />
                 </div>
                 <div>
                     <select>
