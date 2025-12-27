@@ -4,17 +4,10 @@
         <form action="{{ route('car.search') }}" method="GET" class="find-a-car-form card flex p-medium">
             <div class="find-a-car-inputs">
                 <div>
-                    <select>
-                        <option value="">Make</option>
-                        <option value="bmw">BMW</option>
-                        <option value="lexus">Lexus</option>
-                        <option value="mercedes">Mercedes</option>
-                    </select>
+                    <x-select-maker />
                 </div>
                 <div>
-                    <select>
-                        <option value="">Model</option>
-                    </select>
+                    <x-select-model />
                 </div>
                 <div>
                     <select>
