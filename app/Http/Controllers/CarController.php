@@ -97,8 +97,14 @@ class CarController extends Controller
             $query->where('model_id', $model);
         }
         if ($state) {
-            $query->join('cities', 'cities.id', '=', 'cars.city_id')
+            $query->select('cars.*')
+                ->join('cities', 'cities.id', '=', 'cars.city_id')
                 ->where('cities.state_id', $state);
+
+            // or : 
+            // $query->whereHas('city', function ($q) use ($state) {
+            //     $q->where('state_id', $state);
+            // });
         }
         if ($city) {
             $query->where('city_id', $city);
