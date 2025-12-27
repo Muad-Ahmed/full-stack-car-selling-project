@@ -31,9 +31,7 @@
                     <input type="number" placeholder="Price To" />
                 </div>
                 <div>
-                    <select>
-                        <option value="">Fuel Type</option>
-                    </select>
+                    <x-select-fuel-type />
                 </div>
             </div>
             <div>
