@@ -45,6 +45,9 @@
                                     <div>
                                         <x-select-maker />
                                     </div>
+                                    <div>
+                                        <x-select-model />
+                                    </div>
                                     <div class="form-group">
                                         <label class="mb-medium">Model</label>
                                         <select id="modelSelect" name="model_id">
