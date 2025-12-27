@@ -2,18 +2,21 @@
 
 namespace App\View\Components;
 
+use App\Models\Maker;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 
 class SelectMaker extends Component
 {
+    public Collection $makers;
     /**
      * Create a new component instance.
      */
     public function __construct()
     {
-        //
+        $this->makers = Maker::orderBy('name')->get();
     }
 
     /**

@@ -1,3 +1,6 @@
-<div>
-    <!-- Let all your things have their places; let each part of your business have its time. - Benjamin Franklin -->
-</div>
+<select id="makerSelect" name="maker_id">
+    <option value="">Maker</option>
+    @foreach ($makers as $maker)
+        <option value="{{ $maker->id }}">{{ $maker->name }}</option>
+    @endforeach
+</select>

@@ -39,19 +39,11 @@
 
                         <!-- Find a car form -->
                         <section class="find-a-car">
-                            <form action="/s.html" method="GET" class="find-a-car-form card flex p-medium">
+                            <form action="{{ route('car.search') }}" method="GET"
+                                class="find-a-car-form card flex p-medium">
                                 <div class="find-a-car-inputs">
-                                    <div class="form-group">
-                                        <label class="mb-medium">Maker</label>
-                                        <select id="makerSelect" name="maker_id">
-                                            <option value="">Maker</option>
-                                            <option value="4">Chevrolet</option>
-                                            <option value="2">Ford</option>
-                                            <option value="3">Honda</option>
-                                            <option value="6">Lexus</option>
-                                            <option value="5">Nissan</option>
-                                            <option value="1">Toyota</option>
-                                        </select>
+                                    <div>
+                                        <x-select-maker />
                                     </div>
                                     <div class="form-group">
                                         <label class="mb-medium">Model</label>
