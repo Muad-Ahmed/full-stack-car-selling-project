@@ -1,3 +1,8 @@
-<div>
-    <!-- It always seems impossible until it is done. - Nelson Mandela -->
-</div>
+<select id="citySelect" name="city_id">
+    <option value="">City</option>
+    @foreach ($cities as $city)
+        <option value="{{ $city->id }}" data-parent="{{ $city->state_id }}">
+            {{ $city->name }}
+        </option>
+    @endforeach
+</select>

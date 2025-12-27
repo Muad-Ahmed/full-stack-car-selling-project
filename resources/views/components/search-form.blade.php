@@ -13,9 +13,7 @@
                     <x-select-state />
                 </div>
                 <div>
-                    <select>
-                        <option value="">City</option>
-                    </select>
+                    <x-select-city />
                 </div>
                 <div>
                     <select>
