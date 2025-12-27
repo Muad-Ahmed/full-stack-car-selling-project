@@ -16,9 +16,7 @@
                     <x-select-city />
                 </div>
                 <div>
-                    <select>
-                        <option value="">Type</option>
-                    </select>
+                    <x-select-car-type />
                 </div>
                 <div>
                     <input type="number" placeholder="Year From" />
