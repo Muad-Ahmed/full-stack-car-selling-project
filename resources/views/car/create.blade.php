@@ -54,7 +54,7 @@
                         </div>
                         <div class="form-group">
                             <label>Fuel Type</label>
-                            {{-- <x-radio-list-fuel-type /> --}}
+                            <x-radio-list-fuel-type />
                         </div>
                         <div class="row">
                             <div class="col">
@@ -84,7 +84,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <x-checkbox-car-features /> --}}
+                        <x-checkbox-car-features />
                         <div class="form-group">
                             <label>Detailed Description</label>
                             <textarea rows="10" name="description"></textarea>
