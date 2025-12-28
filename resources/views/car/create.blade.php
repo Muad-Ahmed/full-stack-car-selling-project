@@ -30,7 +30,7 @@
                         </div>
                         <div class="form-group">
                             <label>Car Type</label>
-                            {{-- <x-radio-list-car-type /> --}}
+                            <x-radio-list-car-type />
                         </div>
                         <div class="row">
                             <div class="col">
