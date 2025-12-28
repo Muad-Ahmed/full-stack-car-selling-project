@@ -104,11 +104,17 @@
                     </div>
 
                     <div class="search-cars-results">
-                        <div class="car-items-listing">
-                            @foreach ($cars as $car)
-                                <x-car-item :$car />
-                            @endforeach
-                        </div>
+                        @if ($cars->count())
+                            <div class="car-items-listing">
+                                @foreach ($cars as $car)
+                                    <x-car-item :$car />
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center p-large">
+                                No cars were found by given search criteria.
+                            </div>
+                        @endif
                         {{ $cars->onEachSide(1)->links('pagination') }}
                     </div>
                 </div>
