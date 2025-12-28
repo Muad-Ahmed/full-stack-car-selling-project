@@ -319,7 +319,7 @@ select:disabled {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
-  margin-bottom: 0;
+  margin-bottom: 8px;
   font-weight: normal;
 }
 
@@ -1011,6 +1011,7 @@ a.pagination-item:hover {
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
+  flex-direction: column;
 }
 
 .add-new-car-form .form-details {
