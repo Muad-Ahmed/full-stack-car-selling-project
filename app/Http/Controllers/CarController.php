@@ -38,9 +38,13 @@ class CarController extends Controller
     {
         $data = $request->all();
 
+        $featuresData = $data['features'] ?? [];
+
         $data['user_id'] = 1;
 
         $car = Car::create($data);
+
+        $car->features()->create($featuresData);
 
         return redirect()->route('car.index');
     }
