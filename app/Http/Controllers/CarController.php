@@ -132,7 +132,7 @@ class CarController extends Controller
         }
 
 
-        $cars = $query->paginate(15);
+        $cars = $query->paginate(15)->withQueryString();
 
         return view('car.search',  ['cars' => $cars]);
     }
