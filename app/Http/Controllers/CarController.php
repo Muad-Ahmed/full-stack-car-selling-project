@@ -85,10 +85,11 @@ class CarController extends Controller
         $priceFrom = $request->integer('price_from');
         $priceTo = $request->integer('price_to');
         $mileage = $request->integer('mileage');
+        $sort = $request->input('sort', '-published_at');
 
         $query = Car::where('published_at', '<', now())
-            ->with(['primaryImage', 'city', 'carType', 'fuelType', 'maker', 'model'])
-            ->orderBy('published_at', 'desc');
+            ->with(['primaryImage', 'city', 'carType', 'fuelType', 'maker', 'model']);
+
 
         if ($maker) {
             $query->where('maker_id', $maker);
@@ -131,6 +132,12 @@ class CarController extends Controller
             $query->where('mileage', '<=', $mileage);
         }
 
+        if (str_starts_with($sort, '-')) {
+            $sort = substr($sort, 1);
+            $query->orderBy($sort, 'desc');
+        } else {
+            $query->orderBy($sort);
+        }
 
         $cars = $query->paginate(15)->withQueryString();
 
