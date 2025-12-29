@@ -8,7 +8,7 @@
                 <div class="car-images-and-description">
                     <div class="car-images-carousel">
                         <div class="car-image-wrapper">
-                            <img src="{{ $car->primaryImage?->image_path ?: '/img/no_image.jpg' }}" alt=""
+                            <img src="{{ $car->primaryImage?->getUrl() ?: '/img/no_image.jpg' }}" alt=""
                                 class="car-active-image" id="activeImage" />
                         </div>
                         <div class="car-image-thumbnails">

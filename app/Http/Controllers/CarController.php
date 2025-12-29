@@ -36,15 +36,26 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
+        // Get request data
         $data = $request->all();
-
+        // Get features data
         $featuresData = $data['features'] ?? [];
+        // Get images
+        $images = $request->file('images') ?: [];
 
         $data['user_id'] = 1;
 
         $car = Car::create($data);
 
         $car->features()->create($featuresData);
+
+        // Iterate and create images
+        foreach ($images as $i => $image) {
+            // Save image on file system
+            $path = $image->store('public/images');
+            // Create record in the database
+            $car->images()->create(['image_path' => $path, 'position' => $i + 1]);
+        }
 
         return redirect()->route('car.index');
     }

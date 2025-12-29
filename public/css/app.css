@@ -1011,7 +1011,6 @@ a.pagination-item:hover {
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
-  flex-direction: column;
 }
 
 .add-new-car-form .form-details {
