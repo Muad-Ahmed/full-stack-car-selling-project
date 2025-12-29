@@ -54,6 +54,10 @@ class CarController extends Controller
      */
     public function show(Car $car)
     {
+        if (!$car->published_at) {
+            abort(404);
+        }
+
         return view('car.show', ['car' => $car]);
     }
 
