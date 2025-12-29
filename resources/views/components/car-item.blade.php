@@ -2,7 +2,8 @@
 
 <div class="car-item card">
     <a href="{{ route('car.show', 1) }}">
-        <img src={{ $car->primaryImage->image_path }} alt="" class="car-item-img rounded-t" />
+        <img src="{{ $car->primaryImage?->getUrl() ?: '/img/no_image.jpg' }}" alt=""
+            class="car-item-img rounded-t" />
     </a>
     <div class="p-medium">
         <div class="flex items-center justify-between">
