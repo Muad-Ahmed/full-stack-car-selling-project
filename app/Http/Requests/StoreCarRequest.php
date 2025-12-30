@@ -23,8 +23,8 @@ class StoreCarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'maker_id' => 'required',
-            'model_id' => 'required',
+            'maker_id' => 'required|exists:makers,id',
+            'model_id' => 'required|exists:models,id',
             'year' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
             'price' => 'required|integer|min:0',
             'vin' => 'required|string|size:17',
@@ -41,6 +41,25 @@ class StoreCarRequest extends FormRequest
             'images' => 'array',
             'images.*' => File::image()
                 ->max(2048)
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'This field is required',
+            'maker_id.required' => 'Please Select Maker'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'maker_id' => 'maker',
+            'model_id' => 'model',
+            'car_type_id' => 'car type',
+            'fuel_type_id' => 'fuel type',
+            'city_id' => 'city'
         ];
     }
 }
