@@ -22,8 +22,9 @@
                                             <img src="{{ $car->primaryImage?->getUrl() ?: '/img/no_image.jpg' }}"
                                                 alt="" class="my-cars-img-thumbnail" />
                                         </td>
-                                        <td>{{ $car->year }} - {{ $car->maker->name }}
-                                            {{ $car->model->name }}</td>
+                                        <td>
+                                            {{ $car->getTitle() }}
+                                        </td>
                                         <td>{{ $car->getCreateDate() }}</td>
                                         <td>{{ $car->published_at ? 'Yes' : 'No' }}</td>
                                         <td class="">
