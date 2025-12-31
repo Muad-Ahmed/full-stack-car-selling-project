@@ -27,6 +27,9 @@
                 {{ $errors->first('password') }}
             </div>
         </div>
+        <div class="form-group">
+            <input type="password" placeholder="Repeat Password" name="password_confirmation" />
+        </div>
         <button class="btn btn-primary btn-login w-full">Register</button>
     </form>
 
