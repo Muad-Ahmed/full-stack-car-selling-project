@@ -252,4 +252,25 @@ class CarController extends Controller
         // Redirect back to car.images route
         return redirect()->back();
     }
+
+    public function addImages(Request $request, Car $car)
+    {
+        // Get images from request
+        $images = $request->file('images') ?? [];
+
+        // Select max position of car images
+        $position = $car->images()->max('position') ?? 0;
+        foreach ($images as $image) {
+            // Save it on the file system
+            $path = $image->store('public/images');
+            // Save it in the database
+            $car->images()->create([
+                'image_path' => $path,
+                'position' => $position + 1
+            ]);
+            $position++;
+        }
+
+        return redirect()->back();
+    }
 }
