@@ -211,4 +211,9 @@ class CarController extends Controller
 
         return view('car.watchlist', ['cars' => $cars]);
     }
+
+    public function carImages(Car $car)
+    {
+        return view('car.images', ['car' => $car]);
+    }
 }
