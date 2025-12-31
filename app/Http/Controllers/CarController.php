@@ -122,7 +122,9 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
-        //
+        $car->delete();
+
+        return redirect()->route('car.index');
     }
 
     public function search(Request $request)
