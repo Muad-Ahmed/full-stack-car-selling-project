@@ -44,12 +44,12 @@ class Car extends Model
 
     public function images(): HasMany
     {
-        return $this->hasMany(CarImage::class, 'car_id'); // car_id is optional
+        return $this->hasMany(CarImage::class)->orderBy('position');
     }
 
     public function carType(): BelongsTo
     {
-        return $this->belongsTo(CarType::class, 'car_type_id'); // car_type_id is optional
+        return $this->belongsTo(CarType::class);
     }
 
     public function fuelType(): BelongsTo
