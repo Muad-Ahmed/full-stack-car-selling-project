@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 
 class PasswordResetController extends Controller
 {
@@ -11,7 +12,22 @@ class PasswordResetController extends Controller
         return view('auth.forgot-password');
     }
 
-    public function forgotPassword(Request $request) {}
+    public function forgotPassword(Request $request)
+    {
+
+        $request->validate(['email' => ['required', 'email']]);
+
+        $status = Password::sendResetLink($request->only('email'));
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('success', __($status));
+        }
+
+        return back()->withErrors(['email' => __($status)])
+            ->withInput($request->only('email'));
+    }
+
+
 
     public function showResetPassword()
     {
