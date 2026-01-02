@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCarRequest;
 use App\Models\Car;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CarController extends Controller
@@ -13,10 +14,10 @@ class CarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $cars = User::find(1)
+        $cars = $request->user()
             ->cars()
             ->with(['primaryImage', 'maker', 'model'])
             ->orderBy('created_at', 'desc')
@@ -47,7 +48,7 @@ class CarController extends Controller
         // Get images
         $images = $request->file('images') ?: [];
 
-        $data['user_id'] = 1;
+        $data['user_id'] = Auth::id();;
 
         $car = Car::create($data);
 
@@ -61,7 +62,8 @@ class CarController extends Controller
             $car->images()->create(['image_path' => $path, 'position' => $i + 1]);
         }
 
-        return redirect()->route('car.index')->with('success', 'Car was created');
+        return redirect()->route('car.index')
+            ->with('success', 'Car was created');
     }
 
     /**
@@ -81,6 +83,9 @@ class CarController extends Controller
      */
     public function edit(Car $car)
     {
+        if ($car->user_id !== Auth::id()) {
+            abort(403);
+        }
         return view('car.edit', ['car' => $car]);
     }
 
@@ -89,6 +94,11 @@ class CarController extends Controller
      */
     public function update(StoreCarRequest $request, Car $car)
     {
+
+        if ($car->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         // Get validated data from request
         $data = $request->validated();
 
@@ -115,7 +125,8 @@ class CarController extends Controller
         $car->features()->update($features);
 
         // Redirect user back to car listing page
-        return redirect()->route('car.index')->with('success', 'Car was updated');
+        return redirect()->route('car.index')
+            ->with('success', 'Car was updated');
     }
 
     /**
@@ -123,9 +134,14 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
+        if ($car->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $car->delete();
 
-        return redirect()->route('car.index')->with('success', 'Car was deleted');;
+        return redirect()->route('car.index')
+            ->with('success', 'Car was deleted');;
     }
 
     public function search(Request $request)
@@ -205,7 +221,7 @@ class CarController extends Controller
     public function watchlist()
     {
 
-        $cars = User::find(4)
+        $cars = Auth::user()
             ->favouriteCars()
             ->with(['city', 'carType', 'fuelType', 'maker', 'model', 'primaryImage'])
             ->paginate(5);
@@ -220,6 +236,10 @@ class CarController extends Controller
 
     public function updateImages(Request $request, Car $car)
     {
+        if ($car->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         // Get Validated data of delete images and positions
         $data = $request->validate([
             'delete_images' => 'array',
@@ -250,11 +270,16 @@ class CarController extends Controller
         }
 
         // Redirect back to car.images route
-        return redirect()->back()->with('success', 'Car images were updated');
+        return redirect()->back()
+            ->with('success', 'Car images were updated');
     }
 
     public function addImages(Request $request, Car $car)
     {
+        if ($car->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         // Get images from request
         $images = $request->file('images') ?? [];
 
@@ -271,6 +296,7 @@ class CarController extends Controller
             $position++;
         }
 
-        return redirect()->back()->with('success', 'New images were added');
+        return redirect()->back()
+            ->with('success', 'New images were added');
     }
 }
