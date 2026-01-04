@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -39,7 +40,10 @@ class SignupController extends Controller
 
         event(new Registered($user));
 
+        Auth::login($user);
+
         return redirect()->route('home')
-            ->with('success', 'Account created Successfully');
+            ->with('success', 'Account created Successfully. Please check your email
+            to verify your account');
     }
 }
