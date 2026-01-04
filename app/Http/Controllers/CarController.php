@@ -48,7 +48,7 @@ class CarController extends Controller
         // Get images
         $images = $request->file('images') ?: [];
 
-        $data['user_id'] = Auth::id();;
+        $data['user_id'] = Auth::id();
 
         $car = Car::create($data);
 
