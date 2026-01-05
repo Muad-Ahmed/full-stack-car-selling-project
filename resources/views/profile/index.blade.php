@@ -38,6 +38,7 @@
                 </div>
             </form>
 
+            @if(!$user->isOauthUser())
             <form action="{{ route('profile.updatePassword') }}" method="POST" class="card p-large my-large">
                 @csrf
                 @method('PUT')
@@ -67,6 +68,8 @@
                     </div>
                 </div>
             </form>
+            @endif
+            
         </div>
     </main>
 </x-app-layout>

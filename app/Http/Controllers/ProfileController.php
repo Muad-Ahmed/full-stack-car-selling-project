@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
 {
@@ -56,5 +58,37 @@ class ProfileController extends Controller
             ->with('success', $success);
     }
 
-    public function updatePassword(Request $request) {}
+    public function updatePassword(Request $request)
+    {
+        // If the user signed up via Socialite, do not allow password change
+        if ($request->user()->isOauthUser()) {
+            return back()->withErrors([
+                'current_password' => 'You cannot change the password for social media accounts.'
+            ]);
+        }
+
+        // Validate current password and new password
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => [
+                'required',
+                'string',
+                'confirmed',
+                Password::min(8)
+                    ->max(24)
+                    ->numbers()
+                    ->mixedCase()
+                    ->symbols()
+                    ->uncompromised()
+            ]
+        ]);
+
+        // Perform password update
+        $request->user()->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        // Go back with success message
+        return back()->with('success', 'Password updated successfully');
+    }
 }
