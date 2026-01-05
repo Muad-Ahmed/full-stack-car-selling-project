@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'google_id',
         'facebook_id',
         'password',
+        'email_verified_at',
     ];
 
     /**
@@ -55,7 +56,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function favouriteCars(): BelongsToMany
     {
-        return $this->belongsToMany(Car::class, 'favourite_cars'); 
+        return $this->belongsToMany(Car::class, 'favourite_cars');
     }
 
     public function cars(): HasMany
