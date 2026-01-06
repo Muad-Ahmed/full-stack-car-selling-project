@@ -161,7 +161,7 @@ class CarController extends Controller
         $sort = $request->input('sort', '-published_at');
 
         $query = Car::where('published_at', '<', now())
-            ->with(['primaryImage', 'city', 'carType', 'fuelType', 'maker', 'model']);
+            ->with(['primaryImage', 'city', 'carType', 'fuelType', 'maker', 'model', 'favouredUsers']);
 
 
         if ($maker) {
