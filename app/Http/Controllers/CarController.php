@@ -161,7 +161,7 @@ class CarController extends Controller
         $sort = $request->input('sort', '-published_at');
 
         $query = Car::where('published_at', '<', now())
-            ->with(['primaryImage', 'city', 'carType', 'fuelType', 'maker', 'model']);
+            ->with(['primaryImage', 'city', 'carType', 'fuelType', 'maker', 'model', 'favouredUsers']);
 
 
         if ($maker) {
@@ -215,18 +215,6 @@ class CarController extends Controller
         $cars = $query->paginate(15)->withQueryString();
 
         return view('car.search',  ['cars' => $cars]);
-    }
-
-
-    public function watchlist()
-    {
-
-        $cars = Auth::user()
-            ->favouriteCars()
-            ->with(['city', 'carType', 'fuelType', 'maker', 'model', 'primaryImage'])
-            ->paginate(5);
-
-        return view('car.watchlist', ['cars' => $cars]);
     }
 
     public function carImages(Car $car)
