@@ -7,6 +7,7 @@ use App\Models\Car;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class CarController extends Controller
@@ -31,6 +32,11 @@ class CarController extends Controller
      */
     public function create()
     {
+        if (!Gate::allows('create', Car::class)) {
+            return redirect()->route('profile.index')
+                ->with('warning', 'Please provide phone number');
+        }
+
         return view('car.create');
     }
 
@@ -39,8 +45,11 @@ class CarController extends Controller
      */
     public function store(StoreCarRequest $request)
     {
-
-        // Get request data
+        if (!Gate::allows('create', Car::class)) {
+            return redirect()->route('profile.index')
+                ->with('warning', 'Please provide phone number');
+        }
+        
         $data = $request->validated();
 
         // Get features data
@@ -83,9 +92,8 @@ class CarController extends Controller
      */
     public function edit(Car $car)
     {
-        if ($car->user_id !== Auth::id()) {
-            abort(403);
-        }
+        Gate::authorize('update', $car);
+
         return view('car.edit', ['car' => $car]);
     }
 
@@ -95,9 +103,7 @@ class CarController extends Controller
     public function update(StoreCarRequest $request, Car $car)
     {
 
-        if ($car->user_id !== Auth::id()) {
-            abort(403);
-        }
+        Gate::authorize('update', $car);
 
         // Get validated data from request
         $data = $request->validated();
@@ -134,9 +140,7 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
-        if ($car->user_id !== Auth::id()) {
-            abort(403);
-        }
+        Gate::authorize('delete', $car);
 
         $car->delete();
 
@@ -219,14 +223,13 @@ class CarController extends Controller
 
     public function carImages(Car $car)
     {
+        Gate::authorize('update', $car);
         return view('car.images', ['car' => $car]);
     }
 
     public function updateImages(Request $request, Car $car)
     {
-        if ($car->user_id !== Auth::id()) {
-            abort(403);
-        }
+        Gate::authorize('update', $car);
 
         // Get Validated data of delete images and positions
         $data = $request->validate([
@@ -264,9 +267,7 @@ class CarController extends Controller
 
     public function addImages(Request $request, Car $car)
     {
-        if ($car->user_id !== Auth::id()) {
-            abort(403);
-        }
+        Gate::authorize('update', $car);
 
         // Get images from request
         $images = $request->file('images') ?? [];
@@ -286,5 +287,10 @@ class CarController extends Controller
 
         return redirect()->back()
             ->with('success', 'New images were added');
+    }
+
+    public function showPhone(Car $car)
+    {
+        return response()->json(['phone' => $car->phone]);
     }
 }

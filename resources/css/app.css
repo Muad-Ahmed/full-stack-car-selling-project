@@ -1450,3 +1450,10 @@ a.pagination-item:hover {
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 }
+
+.warning-message {
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    background-color: #ac880e;
+    color: white;
+}
