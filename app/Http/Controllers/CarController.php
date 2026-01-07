@@ -32,7 +32,11 @@ class CarController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create', Car::class);
+        if (!Gate::allows('create', Car::class)) {
+            return redirect()->route('profile.index')
+                ->with('warning', 'Please provide phone number');
+        }
+
         return view('car.create');
     }
 
@@ -41,8 +45,11 @@ class CarController extends Controller
      */
     public function store(StoreCarRequest $request)
     {
-        Gate::authorize('create', Car::class);
-
+        if (!Gate::allows('create', Car::class)) {
+            return redirect()->route('profile.index')
+                ->with('warning', 'Please provide phone number');
+        }
+        
         $data = $request->validated();
 
         // Get features data

@@ -74,11 +74,17 @@
         <section>
             <div class="container">
                 <h2>Latest Added Cars</h2>
-                <div class="car-items-listing">
-                    @foreach ($cars as $car)
-                        <x-car-item :$car :is-in-watchlist="$car->favouredUsers->contains(\Illuminate\Support\Facades\Auth::user())" />
-                    @endforeach
-                </div>
+                @if ($cars->count() > 0)
+                    <div class="car-items-listing">
+                        @foreach ($cars as $car)
+                            <x-car-item :$car :is-in-watchlist="$car->favouredUsers->contains(\Illuminate\Support\Facades\Auth::user())" />
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center p-large">
+                        There are no published cars.
+                    </div>
+                @endif
             </div>
         </section>
         <!--/ New Cars -->
