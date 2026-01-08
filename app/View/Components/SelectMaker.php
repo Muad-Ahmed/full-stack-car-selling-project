@@ -6,6 +6,7 @@ use App\Models\Maker;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Component;
 
 class SelectMaker extends Component
@@ -16,7 +17,9 @@ class SelectMaker extends Component
      */
     public function __construct()
     {
-        $this->makers = Maker::orderBy('name')->get();
+        $this->makers = Cache::rememberForever('makers', function () {
+            return Maker::orderBy('name')->get();
+        });
     }
 
     /**
