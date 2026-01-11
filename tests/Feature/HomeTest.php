@@ -1,21 +1,19 @@
 <?php
 
-it('should display "there are no published cars" on home', function () {
-    $response = $this->get('/');
+use function Pest\Laravel\get;
+use function Pest\Laravel\seed;
 
-    $response->assertStatus(200)
+it('should display "there are no published cars" on home', function () {
+    get('/')
+        ->assertStatus(200)
         ->assertSee("There are no published cars.");
 });
 
 it('should display published cars on the home page', function () {
-    $this->seed();
+    seed();
 
-    /** @var \Illuminate\Testing\TestResponse $response */
-    $response = $this->get('/');
-
-    $response->assertStatus(200)
+    get('/')
+        ->assertStatus(200)
         ->assertDontSee("There are no published cars.")
-        ->assertViewHas('cars', function ($collection) {
-            return $collection->count() == 30;
-        });
+        ->assertViewHas('cars', fn($collection) => $collection->count() == 30);
 });
