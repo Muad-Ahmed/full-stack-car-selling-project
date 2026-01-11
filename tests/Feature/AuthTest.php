@@ -108,3 +108,32 @@ it('should be possible to signup with correct data', function () {
         ->assertSessionHas(['success'])
         ->assertDatabaseHas('users', ['email' => 'zura@example.com']);
 });
+
+it('returns success on forgot password page', function () {
+    get(route('password.request'))
+        ->assertStatus(200)
+        ->assertSee('Request Password Reset')
+        ->assertSee('Click here to login')
+        ->assertSee(route('login'));
+});
+
+it('should not be possible to request password with incorrect email', function () {
+
+    post(route('password.email'), [
+        'email' => 'zura@example.com',
+    ])->assertStatus(302)
+        //        ->assertSessionHasErrors(['email'])
+        ->assertInvalid(['email']);
+});
+
+it('should be possible to request password with correct email', function () {
+    \App\Models\User::factory()->create([
+        'email' => 'zura@example.com',
+        'password' => bcrypt('123456')
+    ]);
+
+    post(route('password.email'), [
+        'email' => 'zura@example.com',
+    ])->assertStatus(302)
+        ->assertSessionHas(['success']);
+});
