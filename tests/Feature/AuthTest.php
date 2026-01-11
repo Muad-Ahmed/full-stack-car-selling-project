@@ -57,3 +57,54 @@ it('returns success on signup page', function () {
             route('login.oauth', 'facebook'),
         ]);
 });
+
+it('should not be possible to signup with empty', function () {
+
+    post(route('signup.store'), [
+        'name' => '',
+        'email' => '',
+        'phone' => '',
+        'password' => '',
+        'password_confirmation' => '',
+    ])->assertStatus(302)
+        ->assertInvalid(['name', 'email', 'phone', 'password']);
+});
+
+it('should not be possible to signup with incorrect password', function () {
+
+    post(route('signup.store'), [
+        'name' => 'Zura',
+        'email' => 'zura@example.com',
+        'phone' => '123',
+        'password' => '123456',
+        'password_confirmation' => '1111',
+    ])->assertStatus(302)
+        ->assertInvalid(['password']);
+});
+
+it('should not be possible to signup with existing email', function () {
+    \App\Models\User::factory()->create([
+        'email' => 'zura@example.com'
+    ]);
+    post(route('signup.store'), [
+        'name' => 'Zura',
+        'email' => 'zura@example.com',
+        'phone' => '123',
+        'password' => '1asda523Aa.#',
+        'password_confirmation' => '1asda523Aa.#',
+    ])->assertStatus(302)
+        ->assertInvalid(['email']);
+});
+
+it('should be possible to signup with correct data', function () {
+    post(route('signup.store'), [
+        'name' => 'Zura',
+        'email' => 'zura@example.com',
+        'phone' => '123456',
+        'password' => 'dajhdgaA12312@#',
+        'password_confirmation' => 'dajhdgaA12312@#'
+    ])->assertStatus(302)
+        ->assertRedirectToRoute('home')
+        ->assertSessionHas(['success'])
+        ->assertDatabaseHas('users', ['email' => 'zura@example.com']);
+});
