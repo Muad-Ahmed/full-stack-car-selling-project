@@ -2,6 +2,7 @@
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
+use function Pest\Laravel\seed;
 
 it('returns success on login page', function () {
 
@@ -136,4 +137,31 @@ it('should be possible to request password with correct email', function () {
         'email' => 'zura@example.com',
     ])->assertStatus(302)
         ->assertSessionHas(['success']);
+});
+
+it('should display Signup and Login links for guest user', function () {
+
+    get(route('home'))
+        ->assertStatus(200)
+        ->assertSeeInOrder([
+            route('signup'),
+            'Signup'
+        ])
+        ->assertSeeInOrder([
+            route('login'),
+            'Login'
+        ])
+        ->assertDontSee('Welcome, ');
+});
+
+it('should display Welcome Dropdown for authenticated user', function () {
+    seed();
+    $user = \App\Models\User::first();
+
+    actingAs($user)
+        ->get(route('home'))
+        ->assertStatus(200)
+        ->assertDontSee('Signup')
+        ->assertDontSee('Login')
+        ->assertSee('Welcome, ' . $user->name);
 });
