@@ -31,3 +31,29 @@ it('should not be possible to login with incorrect credentials', function () {
         //        ->assertSessionHasErrors(['email'])
         ->assertInvalid(['email']);
 });
+
+it('should be possible to login with correct credentials', function () {
+    \App\Models\User::factory()->create([
+        'email' => 'zura@example.com',
+        'password' => bcrypt('password')
+    ]);
+
+    post(route('login.store'), [
+        'email' => 'zura@example.com',
+        'password' => 'password'
+    ])->assertStatus(302)
+        ->assertRedirectToRoute('home')
+        ->assertSessionHas(['success']);
+});
+
+it('returns success on signup page', function () {
+    get(route('signup'))
+        ->assertStatus(200)
+        ->assertSee('Signup')
+        ->assertSee('Click here to login')
+        ->assertSeeInOrder([
+            route('login'),
+            route('login.oauth', 'google'),
+            route('login.oauth', 'facebook'),
+        ]);
+});
