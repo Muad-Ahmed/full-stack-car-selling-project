@@ -301,3 +301,15 @@ it('should successfully delete a car', function () {
 
     $this->assertSoftDeleted($firstCar);
 });
+
+it('should test the user can\'t access other user\'s car', function () {
+    seed();
+
+    [$user1, $user2] = User::limit(2)->get();
+
+    $car = $user1->cars()->first();
+
+    $this->actingAs($user2)
+        ->get(route('car.edit', $car))
+        ->assertStatus(404);
+});
