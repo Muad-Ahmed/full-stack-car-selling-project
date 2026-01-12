@@ -313,3 +313,74 @@ it('should test the user can\'t access other user\'s car', function () {
         ->get(route('car.edit', $car))
         ->assertStatus(404);
 });
+
+it('should upload more images on the car', function () {
+    seed();
+    $user = User::first();
+    $firstCar = $user->cars()->first();
+    $oldCount = $firstCar->images()->count();
+
+    $images = [
+        UploadedFile::fake()->image('1.jpg'),
+        UploadedFile::fake()->image('2.jpg'),
+        UploadedFile::fake()->image('3.jpg'),
+        UploadedFile::fake()->image('4.jpg'),
+        UploadedFile::fake()->image('5.jpg'),
+    ];
+
+    actingAs($user)
+        ->post(route('car.addImages', $firstCar), [
+            'images' => $images
+        ])
+        ->assertRedirectToRoute('car.images', $firstCar)
+        ->assertSessionHas('success');
+
+    $newCount = $firstCar->images()->count();
+
+    $this->assertEquals($newCount, $oldCount + count($images));
+});
+
+it("should successfully delete images on the car", function () {
+    seed();
+    $user = User::first();
+    $firstCar = $user->cars()->first();
+    $oldCount = $firstCar->images()->count();
+    $ids = $firstCar->images()->limit(2)->pluck('id')->toArray();
+
+    actingAs($user)
+        ->put(route('car.updateImages', $firstCar), [
+            'delete_images' => $ids
+        ])
+        ->assertRedirectToRoute('car.images', $firstCar)
+        ->assertSessionHas('success');
+
+    $newCount = $firstCar->images()->count();
+
+    $this->assertEquals($newCount, $oldCount - 2);
+});
+
+it("should successfully update image positions", function () {
+    seed();
+    $user = User::first();
+    $firstCar = $user->cars()->first();
+    $images = $firstCar->images()->reorder('position', 'desc')->get();
+
+    $data = [];
+    foreach ($images as $i => $image) {
+        $data[$image->id] = $i + 1;
+    }
+
+    actingAs($user)
+        ->put(route('car.updateImages', $firstCar), [
+            'positions' => $data
+        ])
+        ->assertRedirectToRoute('car.images', $firstCar)
+        ->assertSessionHas('success');
+
+    foreach ($data as $id => $position) {
+        $this->assertDatabaseHas('car_images', [
+            'id' => $id,
+            'position' => $position
+        ]);
+    }
+});
