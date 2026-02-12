@@ -1,6 +1,37 @@
 import axios from "axios";
 import "./bootstrap";
 document.addEventListener("DOMContentLoaded", function () {
+    const btn = document.getElementById("floatingSearchBtn");
+    if (!btn) return;
+
+    const SHOW_AFTER = 1180; // من أعلى الصفحة
+    const HIDE_BEFORE_BOTTOM = 350; // قبل نهاية الصفحة
+
+    window.addEventListener("scroll", () => {
+        // موبايل فقط
+        if (window.innerWidth > 768) {
+            btn.style.opacity = "0";
+            btn.style.pointerEvents = "none";
+            return;
+        }
+
+        const scrollTop = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        const reachedShowPoint = scrollTop >= SHOW_AFTER;
+        const nearBottom =
+            scrollTop + windowHeight >= documentHeight - HIDE_BEFORE_BOTTOM;
+
+        if (reachedShowPoint && !nearBottom) {
+            btn.style.opacity = "0.8";
+            btn.style.pointerEvents = "auto";
+        } else {
+            btn.style.opacity = "0";
+            btn.style.pointerEvents = "none";
+        }
+    });
+
     const initSlider = () => {
         const slides = document.querySelectorAll(".hero-slide");
         let currentIndex = 0; // Track the current slide
@@ -105,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
         const thumbnails = document.querySelectorAll(
-            ".car-image-thumbnails img"
+            ".car-image-thumbnails img",
         );
         const activeImage = document.getElementById("activeImage");
         const prevButton = document.getElementById("prevButton");
@@ -125,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const updateActiveImage = (index) => {
             activeImage.src = thumbnails[index].src;
             thumbnails.forEach((thumbnail) =>
-                thumbnail.classList.remove("active-thumbnail")
+                thumbnail.classList.remove("active-thumbnail"),
             );
             thumbnails[index].classList.add("active-thumbnail");
         };
@@ -252,11 +283,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.error(error.response);
                         if (error?.response?.status === 401) {
                             alert(
-                                "Please authenticate first to add cars into watchlist."
+                                "Please authenticate first to add cars into watchlist.",
                             );
                         } else {
                             alert(
-                                "Internal Server Error. Please Try again later!"
+                                "Internal Server Error. Please Try again later!",
                             );
                         }
                     });
