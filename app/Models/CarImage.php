@@ -29,6 +29,12 @@ class CarImage extends Model
             return $this->image_path;
         }
 
+        // If path starts with a leading slash we assume it's a public path
+        // (for example: /images/cars/car_main_1.jpg) and return it directly.
+        if (str_starts_with($this->image_path, '/')) {
+            return $this->image_path;
+        }
+
         return Storage::url($this->image_path);
     }
 }

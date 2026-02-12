@@ -123,5 +123,25 @@ class DatabaseSeeder extends Seeder
                 'favouriteCars'
             )
             ->create();
+
+        // Assign real images (public/images/cars/car_main_{1..30}.jpg)
+        // to the 30 cars shown on the homepage when such files exist.
+        $homepageCars = Car::where('published_at', '<', now())
+            ->orderBy('published_at', 'desc')
+            ->limit(30)
+            ->get();
+
+        foreach ($homepageCars as $index => $car) {
+            $num = $index + 1;
+            $publicPath = public_path("images/cars/car_main_{$num}.jpg");
+            $dbPath = "/images/cars/car_main_{$num}.jpg";
+
+            if (file_exists($publicPath)) {
+                $primary = $car->images()->orderBy('position')->first();
+                if ($primary) {
+                    $primary->update(['image_path' => $dbPath]);
+                }
+            }
+        }
     }
 }
