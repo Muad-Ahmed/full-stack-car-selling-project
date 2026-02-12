@@ -12,8 +12,8 @@
                 <div class="car-images-and-description">
                     <div class="car-images-carousel">
                         <div class="car-image-wrapper">
-                            <img src="{{ $car->primaryImage?->getUrl() ?: '/img/no_image.jpg' }}" alt=""
-                                class="car-active-image" id="activeImage" />
+                            <img src="{{ $car->primaryImage?->getUrl() ?: '/img/no_image.jpg' }}"
+                                alt="{{ $car->maker->name }}" class="car-active-image" id="activeImage" loading="lazy" />
                         </div>
                         <div class="car-image-thumbnails">
                             @php
@@ -44,7 +44,7 @@
                                     }
                                 @endphp
 
-                                <img src="{{ $url }}" alt="" />
+                                <img src="{{ $url }}" loading="lazy" />
                             @endforeach
                         </div>
                         <button class="carousel-button prev-button" id="prevButton">
