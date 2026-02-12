@@ -28,9 +28,23 @@
                                     $ordered = $images;
                                 }
                             @endphp
-
+                            @php
+                                $colors = ['656564', '4A4A48', '323232', '1A1A1B'];
+                            @endphp
                             @foreach ($ordered as $image)
-                                <img src="{{ $image->getUrl() }}" alt="" />
+                                @php
+                                    $url = $image->getUrl();
+
+                                    // Apply ordered colors only to secondary placeholder thumbnails
+                                    if ($loop->index > 0 && str_contains($url, 'placehold.co')) {
+                                        $color = $colors[($loop->index - 1) % count($colors)];
+
+                                        // Replace only the background color segment (known structure)
+                                        $url = str_replace('/600x400/gray/white', "/600x400/{$color}/white", $url);
+                                    }
+                                @endphp
+
+                                <img src="{{ $url }}" alt="" />
                             @endforeach
                         </div>
                         <button class="carousel-button prev-button" id="prevButton">
