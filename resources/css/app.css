@@ -1503,3 +1503,46 @@ a.pagination-item:hover {
         width: 100%;
     }
 }
+
+/* ### */
+.submenu a,
+.logout-button {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    width: 100%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 15px;
+    color: #4b5563;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.submenu svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.submenu li {
+    margin-bottom: 1px;
+}
+
+.logout-divider {
+    border-top: 1px solid #eee;
+    margin-top: 5px;
+}
+
+.logout-button {
+    color: #ef4444;
+}
+
+.logout-button:hover {
+    background-color: #fef2f2;
+}
+/* ### */

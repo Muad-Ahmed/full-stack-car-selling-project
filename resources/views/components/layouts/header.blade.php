@@ -30,18 +30,46 @@
                     </a>
                     <ul class="submenu">
                         <li>
-                            <a href="{{ route('profile.index') }}">My Profile</a>
+                            <a href="{{ route('profile.index') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                                <span> My Profile</span>
+                            </a>
                         </li>
                         <li>
-                            <a href="{{ route('car.index') }}">My Cars</a>
+                            <a href="{{ route('car.index') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124l-.083-1.314a4.5 4.5 0 0 0-4.437-4.212H10.5m-5.417 5.417A1.5 1.5 0 0 1 3.75 14.25V11.25c0-1.162.836-2.148 1.986-2.312l9.088-1.299c1.077-.154 2.126.653 2.126 1.742V10.5" />
+                                </svg>
+                                My Cars
+                            </a>
                         </li>
                         <li>
-                            <a href="{{ route('watchlist.index') }}">My Favourite Cars</a>
+                            <a href="{{ route('watchlist.index') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                </svg>
+                                My Favourite Cars
+                            </a>
                         </li>
-                        <li>
+                        <li class="logout-divider">
                             <form action="{{ route('logout') }}" method="post">
                                 @csrf
-                                <button>Logout</button>
+                                <button type="submit" class="logout-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3-3H15m-3-3-3 3 3 3" />
+                                    </svg>
+                                    Logout
+                                </button>
                             </form>
                         </li>
                     </ul>
