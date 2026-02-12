@@ -16,8 +16,21 @@
                                 class="car-active-image" id="activeImage" />
                         </div>
                         <div class="car-image-thumbnails">
-                            @foreach ($car->images as $image)
-                                <img src="/img/cars/Lexus-RX200t-2016/1.jpeg" alt="" />
+                            @php
+                                $primary = $car->primaryImage;
+                                $images = $car->images;
+
+                                if ($primary) {
+                                    // Remove primary from images if present, then prepend it
+                                    $images = $images->filter(fn($img) => $img->id !== $primary->id);
+                                    $ordered = collect([$primary])->concat($images);
+                                } else {
+                                    $ordered = $images;
+                                }
+                            @endphp
+
+                            @foreach ($ordered as $image)
+                                <img src="{{ $image->getUrl() }}" alt="" />
                             @endforeach
                         </div>
                         <button class="carousel-button prev-button" id="prevButton">
