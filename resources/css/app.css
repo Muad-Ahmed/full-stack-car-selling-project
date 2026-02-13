@@ -1376,11 +1376,15 @@ a.pagination-item:hover {
         width: 50px;
         height: 50px;
         padding: 0;
+        position: relative;
+        z-index: 1010;
     }
 
     .navbar-auth {
         position: fixed;
-        right: 0;
+        /* keep the auth panel off-screen when closed so it doesn't block
+           the navbar toggle; it will slide in when `body.navbar-opened` */
+        right: -240px;
         top: 0;
         bottom: 0;
         height: 100vh;
@@ -1388,6 +1392,8 @@ a.pagination-item:hover {
         width: 240px;
         background-color: #fff;
         display: flex;
+        transition: right 0.25s ease;
+        pointer-events: none;
         flex-direction: column;
         padding: 1rem;
         align-items: stretch;
@@ -1399,6 +1405,12 @@ a.pagination-item:hover {
     body.navbar-opened {
         overflow: hidden;
         transform: translateX(-240px);
+    }
+
+    /* When navbar is opened, bring the auth panel into view and enable pointer events */
+    body.navbar-opened .navbar-auth {
+        right: 0;
+        pointer-events: auto;
     }
 
     .find-a-car-form {
@@ -1692,7 +1704,6 @@ a.pagination-item:hover {
     color: #9ca3af;
     margin-top: 4px;
 }
-/* تنسيقات بديلة لكلاسات Tailwind */
 .section-padding {
     padding: 40px 0;
 }
@@ -1804,7 +1815,7 @@ a.pagination-item:hover {
         color: #2d3748;
         font-size: 1rem !important;
     }
-    .card {
+    .my-cars-card {
         background-color: transparent;
     }
 }

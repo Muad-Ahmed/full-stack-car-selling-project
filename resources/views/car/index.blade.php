@@ -7,7 +7,7 @@
                     <a href="{{ route('car.create') }}" class="btn btn-primary">Add New Car</a>
                 </div>
 
-                <div class="card">
+                <div class="card my-cars-card">
                     <div class="table-responsive">
                         <table class="table my-cars-table">
                             <thead>

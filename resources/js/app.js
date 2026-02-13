@@ -2,35 +2,36 @@ import axios from "axios";
 import "./bootstrap";
 document.addEventListener("DOMContentLoaded", function () {
     const btn = document.getElementById("floatingSearchBtn");
-    if (!btn) return;
 
-    const SHOW_AFTER = 1180; // من أعلى الصفحة
-    const HIDE_BEFORE_BOTTOM = 350; // قبل نهاية الصفحة
+    const SHOW_AFTER = 1180;
+    const HIDE_BEFORE_BOTTOM = 350;
 
-    window.addEventListener("scroll", () => {
-        // موبايل فقط
-        if (window.innerWidth > 768) {
-            btn.style.opacity = "0";
-            btn.style.pointerEvents = "none";
-            return;
-        }
+    // Attach scroll handler only when the floating search button exists on the page.
+    if (btn) {
+        window.addEventListener("scroll", () => {
+            if (window.innerWidth > 768) {
+                btn.style.opacity = "0";
+                btn.style.pointerEvents = "none";
+                return;
+            }
 
-        const scrollTop = window.scrollY;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
 
-        const reachedShowPoint = scrollTop >= SHOW_AFTER;
-        const nearBottom =
-            scrollTop + windowHeight >= documentHeight - HIDE_BEFORE_BOTTOM;
+            const reachedShowPoint = scrollTop >= SHOW_AFTER;
+            const nearBottom =
+                scrollTop + windowHeight >= documentHeight - HIDE_BEFORE_BOTTOM;
 
-        if (reachedShowPoint && !nearBottom) {
-            btn.style.opacity = "0.8";
-            btn.style.pointerEvents = "auto";
-        } else {
-            btn.style.opacity = "0";
-            btn.style.pointerEvents = "none";
-        }
-    });
+            if (reachedShowPoint && !nearBottom) {
+                btn.style.opacity = "0.8";
+                btn.style.pointerEvents = "auto";
+            } else {
+                btn.style.opacity = "0";
+                btn.style.pointerEvents = "none";
+            }
+        });
+    }
 
     const initSlider = () => {
         const slides = document.querySelectorAll(".hero-slide");
@@ -128,6 +129,19 @@ document.addEventListener("DOMContentLoaded", function () {
         btnToggle.onclick = () => {
             document.body.classList.toggle("navbar-opened");
         };
+
+        document.addEventListener("click", (event) => {
+            const isClickInside =
+                btnToggle.contains(event.target) ||
+                document.querySelector(".navbar-menu").contains(event.target);
+
+            if (
+                !isClickInside &&
+                document.body.classList.contains("navbar-opened")
+            ) {
+                document.body.classList.remove("navbar-opened");
+            }
+        });
     };
 
     const imageCarousel = () => {
