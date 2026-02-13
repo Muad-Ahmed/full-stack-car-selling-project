@@ -560,7 +560,6 @@ main {
 .btn-primary {
     color: var(--primary-button-color);
     background-color: var(--primary-color);
-    border: 1px solid var(--primary-button-border-color);
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
     transition: all 0.3s;
 }
@@ -1550,7 +1549,7 @@ a.pagination-item:hover {
 /* ### */
 
 .find-more-section {
-    padding: 35px 0 90px ;
+    padding: 35px 0 90px;
     text-align: center;
     border-top: 1px solid #eee;
 }
@@ -1568,7 +1567,7 @@ a.pagination-item:hover {
 }
 
 .floating-search-btn {
-     display: none;
+    display: none;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -1608,3 +1607,205 @@ a.pagination-item:hover {
 }
 
 /* ### */
+
+/* My Cars Section */
+.my-cars-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.my-cars-table th {
+    background-color: #f9fafb;
+    padding: 12px 15px;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.my-cars-table td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.my-cars-img-thumbnail {
+    width: 75px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 8px 0;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    border: 1px solid #e5e7eb;
+    background: white;
+}
+
+.btn-action svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-edit-icon:hover {
+    color: #2563eb;
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+.btn-images-icon:hover {
+    color: #059669;
+    border-color: #059669;
+    background: #ecfdf5;
+}
+.btn-delete-icon:hover {
+    color: #dc2626;
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.badge-success {
+    background: #dcfce7;
+    color: #166534;
+}
+.badge-warning {
+    background: #fef9c3;
+    color: #854d0e;
+}
+
+.mobile-only-info {
+    display: none;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+/* تنسيقات بديلة لكلاسات Tailwind */
+.section-padding {
+    padding: 40px 0;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.actions-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.inline-form {
+    display: inline-block;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.font-bold {
+    font-weight: 600;
+}
+
+.empty-state {
+    padding: 40px;
+}
+
+.pagination-wrapper {
+    padding: 20px;
+}
+
+.link-primary {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .my-cars-table thead {
+        display: none;
+    }
+
+    .my-cars-table tr {
+        display: block;
+        background: #fff;
+        border: 1px solid #edf2f7;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .my-cars-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f7fafc;
+        padding: 10px 5px;
+        text-align: right;
+        font-size: 0.9rem;
+    }
+
+    .my-cars-table td:last-child {
+        border-bottom: none;
+        margin-top: 10px;
+    }
+
+    .my-cars-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-right: 15px;
+    }
+    .my-cars-table td[data-label="Image"]::before {
+        display: none !important;
+    }
+    .my-cars-table td[data-label="Image"] {
+        flex-direction: column;
+        align-items: center;
+        border-bottom: 1px solid #edf2f7;
+        margin-bottom: 10px;
+        justify-content: center;
+        padding: 15px 0;
+        background-color: #fcfcfc;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .my-cars-img-thumbnail {
+        width: 120px;
+        height: 80px;
+    }
+
+    .actions-wrapper {
+        width: 100%;
+        justify-content: space-around !important;
+        background: #f8fafc;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .title-cell {
+        color: #2d3748;
+        font-size: 1rem !important;
+    }
+    .card {
+        background-color: transparent;
+    }
+}
+/*End  My Cars Section */
