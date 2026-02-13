@@ -125,15 +125,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const initMobileNavbar = () => {
         const btnToggle = document.querySelector(".btn-navbar-toggle");
+        if (!btnToggle) return;
 
         btnToggle.onclick = () => {
             document.body.classList.toggle("navbar-opened");
         };
 
         document.addEventListener("click", (event) => {
+            const navbarMenu = document.querySelector(".navbar-menu");
             const isClickInside =
-                btnToggle.contains(event.target) ||
-                document.querySelector(".navbar-menu").contains(event.target);
+                (btnToggle && btnToggle.contains(event.target)) ||
+                (navbarMenu && navbarMenu.contains(event.target));
 
             if (
                 !isClickInside &&
@@ -157,6 +159,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const nextButton = document.getElementById("nextButton");
 
         let currentIndex = 0;
+
+        if (!thumbnails.length || !activeImage) return;
 
         // Initialize active thumbnail class
         thumbnails.forEach((thumbnail, index) => {
@@ -184,17 +188,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Add click event listener to the previous button
-        prevButton.addEventListener("click", () => {
-            currentIndex =
-                (currentIndex - 1 + thumbnails.length) % thumbnails.length;
-            updateActiveImage(currentIndex);
-        });
+        if (prevButton) {
+            prevButton.addEventListener("click", () => {
+                currentIndex =
+                    (currentIndex - 1 + thumbnails.length) % thumbnails.length;
+                updateActiveImage(currentIndex);
+            });
+        }
 
         // Add click event listener to the next button
-        nextButton.addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % thumbnails.length;
-            updateActiveImage(currentIndex);
-        });
+        if (nextButton) {
+            nextButton.addEventListener("click", () => {
+                currentIndex = (currentIndex + 1) % thumbnails.length;
+                updateActiveImage(currentIndex);
+            });
+        }
     };
 
     const initMobileFilters = () => {
@@ -312,6 +320,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const initShowPhoneNumber = () => {
         // Select the element we need to listen to click
         const span = document.querySelector(".car-details-phone-view");
+        if (!span) return;
 
         span.addEventListener("click", (ev) => {
             ev.preventDefault();
@@ -325,10 +334,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Find the <a> element
                 const a = span.parentElement;
                 // and update its href attribute with full phone number received from backend
-                a.href = "tel:" + phone;
+                if (a) a.href = "tel:" + phone;
                 // Find the element which contains obfuscated text and update it
-                const phoneEl = a.querySelector(".text-phone");
-                phoneEl.innerText = phone;
+                const phoneEl = a ? a.querySelector(".text-phone") : null;
+                if (phoneEl) phoneEl.innerText = phone;
             });
         });
     };
@@ -351,5 +360,23 @@ document.addEventListener("DOMContentLoaded", function () {
         delay: 200,
         origin: "bottom",
         distance: "50%",
+    });
+
+    const flashMessages = document.querySelectorAll(
+        ".success-message, .warning-message",
+    );
+
+    flashMessages.forEach((msg) => {
+        setTimeout(() => {
+            msg.style.transition = "opacity 0.6s ease";
+
+            requestAnimationFrame(() => {
+                msg.style.opacity = "0";
+            });
+
+            setTimeout(() => {
+                msg.remove();
+            }, 600);
+        }, 3000);
     });
 });
