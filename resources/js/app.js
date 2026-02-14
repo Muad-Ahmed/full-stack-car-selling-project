@@ -306,38 +306,126 @@ document.addEventListener("DOMContentLoaded", function () {
        Add to Watchlist (NO alert)
     ========================== */
     const initAddToWatchlist = () => {
-        // Use event delegation so dynamically-rendered buttons work as well
+        // helper: try to extract numeric car id from URL (last number), otherwise return the full url
+        const extractCarKey = (url) => {
+            if (!url) return null;
+            const m = String(url).match(/(\d+)(?=[^\/]*$)/); // last numeric segment
+            return m ? m[1] : url;
+        };
+
         document.addEventListener("click", (ev) => {
-            const btn = ev.target.closest && ev.target.closest(".btn-heart");
+            const btn = ev.target?.closest?.(".btn-heart");
             if (!btn) return;
             ev.preventDefault();
 
             const url = btn.dataset.url;
             if (!url) return;
+            if (btn.dataset.loading === "1") return; // prevent double
+
+            // derive stable key: prefer explicit data-car-id if present, otherwise try URL extraction, otherwise fallback to url string
+            const clickedCarKey =
+                btn.dataset.carId ?? extractCarKey(url) ?? url;
+
+            // find all buttons that represent the same car (use their data-car-id if present, else try to extract from their data-url)
+            const allButtons = Array.from(
+                document.querySelectorAll(".btn-heart"),
+            ).filter((b) => {
+                const bUrl = b.dataset.url || "";
+                const bKey = b.dataset.carId ?? extractCarKey(bUrl) ?? bUrl;
+                return String(bKey) === String(clickedCarKey);
+            });
+
+            // determine current state by inspecting the clicked button's SVGs
+            const svgs = btn.querySelectorAll("svg");
+            const hasFilled =
+                svgs.length >= 2
+                    ? !svgs[1].classList.contains("hidden")
+                    : !svgs[0].classList.contains("hidden");
+            const currentlyAdded = Boolean(hasFilled);
+
+            // optimistic new state
+            const optimisticAdded = !currentlyAdded;
+
+            // apply state helper
+            const applyStateTo = (buttons, added) => {
+                buttons.forEach((b) => {
+                    const s = Array.from(b.querySelectorAll("svg"));
+                    if (s.length >= 2) {
+                        // s[0] outline, s[1] filled
+                        s[0].classList.toggle("hidden", added);
+                        s[1].classList.toggle("hidden", !added);
+                    } else if (s.length === 1) {
+                        s[0].classList.toggle("hidden");
+                    }
+                });
+            };
+
+            // optimistic update
+            applyStateTo(allButtons, optimisticAdded);
+
+            // if removing and on /watchlist, remove element immediately but keep a clone to restore on failure
+            let removedClone = null;
+            let removedParent = null;
+            let removedNext = null;
+            if (
+                !optimisticAdded &&
+                window.location.pathname.includes("/watchlist")
+            ) {
+                const carItem =
+                    btn.closest(".car-item") ||
+                    btn.closest(".card") ||
+                    btn.closest(".car-list-item");
+                if (carItem) {
+                    removedParent = carItem.parentNode;
+                    removedNext = carItem.nextSibling;
+                    removedClone = carItem.cloneNode(true);
+                    carItem.remove();
+                }
+            }
+
+            // mark loading
+            allButtons.forEach((b) => (b.dataset.loading = "1"));
 
             axios
                 .post(url)
                 .then((response) => {
-                    // Toggle visible/hidden svgs
-                    const svgHidden = btn.querySelector("svg.hidden");
-                    const svgVisible = btn.querySelector("svg:not(.hidden)");
-                    if (svgHidden) svgHidden.classList.remove("hidden");
-                    if (svgVisible) svgVisible.classList.add("hidden");
+                    // If backend returns explicit added flag, prefer it. Otherwise trust optimistic.
+                    const serverAdded =
+                        response?.data &&
+                        typeof response.data.added !== "undefined"
+                            ? response.data.added
+                            : optimisticAdded;
 
-                    // If the server indicates the car was removed from watchlist,
-                    // remove the car's element from the DOM immediately —
-                    // but only when we're on the watchlist page to avoid
-                    // removing items on other pages (e.g. home/search).
-                    if (response.data && response.data.added === false) {
-                        if (window.location.pathname.includes("/watchlist")) {
-                            const carItem = btn.closest(".car-item");
-                            if (carItem) carItem.remove();
-                        }
+                    // apply authoritative state to the same group
+                    applyStateTo(allButtons, Boolean(serverAdded));
+
+                    // if server says removed and we're on watchlist ensure item removed (already removed optimistically)
+                    if (
+                        serverAdded === false &&
+                        window.location.pathname.includes("/watchlist")
+                    ) {
+                        // already removed optimistically; nothing else needed
                     }
 
-                    showToast("success", response.data.message || "Updated");
+                    showToast(
+                        "success",
+                        (response && response.data && response.data.message) ||
+                            "Updated",
+                    );
                 })
                 .catch((error) => {
+                    // revert UI
+                    applyStateTo(allButtons, currentlyAdded);
+
+                    // restore removed element if we removed it optimistically
+                    if (removedClone && removedParent) {
+                        // insert before saved next sibling (or append)
+                        removedParent.insertBefore(
+                            removedClone,
+                            removedNext || null,
+                        );
+                    }
+
                     if (error?.response?.status === 401) {
                         showToast(
                             "warning",
@@ -349,6 +437,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             "Internal Server Error. Please try again later.",
                         );
                     }
+                })
+                .finally(() => {
+                    allButtons.forEach((b) => delete b.dataset.loading);
                 });
         });
     };
@@ -370,6 +461,33 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     };
+
+    /* ==========================
+       Delete Modal (custom)
+    ========================== */
+    const deleteModal = document.getElementById("deleteModal");
+    const deleteForm = document.getElementById("deleteForm");
+
+    window.openDeleteModal = (action) => {
+        if (!deleteModal || !deleteForm) return;
+        deleteForm.action = action;
+        deleteModal.classList.remove("hidden");
+    };
+
+    window.closeDeleteModal = () => {
+        if (!deleteModal) return;
+        deleteModal.classList.add("hidden");
+    };
+
+    // close when clicking outside box
+    deleteModal?.addEventListener("click", (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+    });
+
+    // close on Escape
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeDeleteModal();
+    });
 
     /* ==========================
        Init Calls

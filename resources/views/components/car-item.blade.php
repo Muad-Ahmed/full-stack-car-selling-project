@@ -6,7 +6,7 @@
             $primaryUrl = $car->primaryImage?->getUrl();
             $version = $car->updated_at?->timestamp ?? now()->timestamp;
         @endphp
-        <img src="{{ $primaryUrl ? $primaryUrl . '?v=' . $version : '/img/no_image.jpg' }}" alt=""
+        <img src="{{ $primaryUrl ? $primaryUrl . '?v=' . $version : '/img/no_image.jpg' }}" alt="{{ $car->maker->name }}"
             class="car-item-img rounded-t" />
     </a>
     <div class="p-medium">

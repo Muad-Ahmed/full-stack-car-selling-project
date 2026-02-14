@@ -1842,7 +1842,7 @@ a.pagination-item:hover {
 .toast {
     pointer-events: auto;
     min-width: 240px;
-    max-width: 320px;
+    max-width: 420px;
     padding: 13px 20px;
     margin-bottom: 12px;
     display: flex;
