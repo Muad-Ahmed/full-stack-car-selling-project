@@ -2,7 +2,11 @@
 
 <div class="car-item card">
     <a href="{{ route('car.show', $car) }}">
-        <img src="{{ $car->primaryImage?->getUrl() ?: '/img/no_image.jpg' }}" alt=""
+        @php
+            $primaryUrl = $car->primaryImage?->getUrl();
+            $version = $car->updated_at?->timestamp ?? now()->timestamp;
+        @endphp
+        <img src="{{ $primaryUrl ? $primaryUrl . '?v=' . $version : '/img/no_image.jpg' }}" alt=""
             class="car-item-img rounded-t" />
     </a>
     <div class="p-medium">

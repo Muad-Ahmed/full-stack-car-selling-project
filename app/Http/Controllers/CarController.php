@@ -266,6 +266,9 @@ class CarController extends Controller
         }
 
         // Redirect back to car.images route
+        // Update car timestamp so UI image URLs change and bypass browser cache
+        $car->touch();
+
         return redirect()->back()
             ->with('success', 'Car images were updated');
     }
@@ -289,6 +292,9 @@ class CarController extends Controller
             ]);
             $position++;
         }
+
+        // Update car timestamp so UI image URLs change and bypass browser cache
+        $car->touch();
 
         return redirect()->back()
             ->with('success', 'New images were added');

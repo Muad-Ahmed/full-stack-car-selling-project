@@ -23,7 +23,12 @@
                                 @forelse($cars as $car)
                                     <tr>
                                         <td data-label="Image">
-                                            <img src="{{ $car->primaryImage?->getUrl() ?: '/img/no_image.jpg' }}"
+                                            {{-- TODO : move the logic into custom method in Car model --}}
+                                            @php
+                                                $primaryUrl = $car->primaryImage?->getUrl();
+                                                $version = $car->updated_at?->timestamp ?? now()->timestamp;
+                                            @endphp
+                                            <img src="{{ $primaryUrl ? $primaryUrl . '?v=' . $version : '/img/no_image.jpg' }}"
                                                 alt="" class="my-cars-img-thumbnail" />
                                         </td>
                                         <td data-label="Title" class="font-bold">
