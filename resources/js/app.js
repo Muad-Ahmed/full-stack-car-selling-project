@@ -306,143 +306,85 @@ document.addEventListener("DOMContentLoaded", function () {
        Add to Watchlist (NO alert)
     ========================== */
     const initAddToWatchlist = () => {
-        // helper: try to extract numeric car id from URL (last number), otherwise return the full url
-        const extractCarKey = (url) => {
-            if (!url) return null;
-            const m = String(url).match(/(\d+)(?=[^\/]*$)/); // last numeric segment
-            return m ? m[1] : url;
+    const extractCarKey = (url) => {
+        if (!url) return null;
+        const m = String(url).match(/(\d+)(?=[^\/]*$)/);
+        return m ? m[1] : url;
+    };
+
+    document.addEventListener("click", (ev) => {
+        const btn = ev.target?.closest?.(".btn-heart");
+        if (!btn) return;
+        ev.preventDefault();
+
+        const url = btn.dataset.url;
+        if (!url) return;
+        if (btn.dataset.loading === "1") return; // prevent double
+
+        const clickedCarKey = btn.dataset.carId ?? extractCarKey(url) ?? url;
+
+        const allButtons = Array.from(document.querySelectorAll(".btn-heart")).filter((b) => {
+            const bUrl = b.dataset.url || "";
+            const bKey = b.dataset.carId ?? extractCarKey(bUrl) ?? bUrl;
+            return String(bKey) === String(clickedCarKey);
+        });
+
+        const svgs = btn.querySelectorAll("svg");
+        const hasFilled = svgs.length >= 2
+            ? !svgs[1].classList.contains("hidden")
+            : !svgs[0].classList.contains("hidden");
+        const currentlyAdded = Boolean(hasFilled);
+
+        const optimisticAdded = !currentlyAdded;
+
+        const applyStateTo = (buttons, added) => {
+            buttons.forEach((b) => {
+                const s = Array.from(b.querySelectorAll("svg"));
+                if (s.length >= 2) {
+                    s[0].classList.toggle("hidden", added); // outline
+                    s[1].classList.toggle("hidden", !added); // filled
+                } else if (s.length === 1) {
+                    s[0].classList.toggle("hidden");
+                }
+            });
         };
 
-        document.addEventListener("click", (ev) => {
-            const btn = ev.target?.closest?.(".btn-heart");
-            if (!btn) return;
-            ev.preventDefault();
+        applyStateTo(allButtons, optimisticAdded);
 
-            const url = btn.dataset.url;
-            if (!url) return;
-            if (btn.dataset.loading === "1") return; // prevent double
+        allButtons.forEach((b) => (b.dataset.loading = "1"));
 
-            // derive stable key: prefer explicit data-car-id if present, otherwise try URL extraction, otherwise fallback to url string
-            const clickedCarKey =
-                btn.dataset.carId ?? extractCarKey(url) ?? url;
+        axios.post(url)
+            .then((response) => {
+                const serverAdded = response?.data?.added ?? optimisticAdded;
 
-            // find all buttons that represent the same car (use their data-car-id if present, else try to extract from their data-url)
-            const allButtons = Array.from(
-                document.querySelectorAll(".btn-heart"),
-            ).filter((b) => {
-                const bUrl = b.dataset.url || "";
-                const bKey = b.dataset.carId ?? extractCarKey(bUrl) ?? bUrl;
-                return String(bKey) === String(clickedCarKey);
-            });
+                applyStateTo(allButtons, Boolean(serverAdded));
 
-            // determine current state by inspecting the clicked button's SVGs
-            const svgs = btn.querySelectorAll("svg");
-            const hasFilled =
-                svgs.length >= 2
-                    ? !svgs[1].classList.contains("hidden")
-                    : !svgs[0].classList.contains("hidden");
-            const currentlyAdded = Boolean(hasFilled);
+                showToast(
+                    "success",
+                    response?.data?.message || "Updated"
+                );
+            })
+            .catch((error) => {
+                applyStateTo(allButtons, currentlyAdded);
 
-            // optimistic new state
-            const optimisticAdded = !currentlyAdded;
-
-            // apply state helper
-            const applyStateTo = (buttons, added) => {
-                buttons.forEach((b) => {
-                    const s = Array.from(b.querySelectorAll("svg"));
-                    if (s.length >= 2) {
-                        // s[0] outline, s[1] filled
-                        s[0].classList.toggle("hidden", added);
-                        s[1].classList.toggle("hidden", !added);
-                    } else if (s.length === 1) {
-                        s[0].classList.toggle("hidden");
-                    }
-                });
-            };
-
-            // optimistic update
-            applyStateTo(allButtons, optimisticAdded);
-
-            // if removing and on /watchlist, remove element immediately but keep a clone to restore on failure
-            let removedClone = null;
-            let removedParent = null;
-            let removedNext = null;
-            if (
-                !optimisticAdded &&
-                window.location.pathname.includes("/watchlist")
-            ) {
-                const carItem =
-                    btn.closest(".car-item") ||
-                    btn.closest(".card") ||
-                    btn.closest(".car-list-item");
-                if (carItem) {
-                    removedParent = carItem.parentNode;
-                    removedNext = carItem.nextSibling;
-                    removedClone = carItem.cloneNode(true);
-                    carItem.remove();
-                }
-            }
-
-            // mark loading
-            allButtons.forEach((b) => (b.dataset.loading = "1"));
-
-            axios
-                .post(url)
-                .then((response) => {
-                    // If backend returns explicit added flag, prefer it. Otherwise trust optimistic.
-                    const serverAdded =
-                        response?.data &&
-                        typeof response.data.added !== "undefined"
-                            ? response.data.added
-                            : optimisticAdded;
-
-                    // apply authoritative state to the same group
-                    applyStateTo(allButtons, Boolean(serverAdded));
-
-                    // if server says removed and we're on watchlist ensure item removed (already removed optimistically)
-                    if (
-                        serverAdded === false &&
-                        window.location.pathname.includes("/watchlist")
-                    ) {
-                        // already removed optimistically; nothing else needed
-                    }
-
+                if (error?.response?.status === 401) {
                     showToast(
-                        "success",
-                        (response && response.data && response.data.message) ||
-                            "Updated",
+                        "warning",
+                        "Please authenticate first to add cars into watchlist."
                     );
-                })
-                .catch((error) => {
-                    // revert UI
-                    applyStateTo(allButtons, currentlyAdded);
+                } else {
+                    showToast(
+                        "warning",
+                        "Internal Server Error. Please try again later."
+                    );
+                }
+            })
+            .finally(() => {
+                allButtons.forEach((b) => delete b.dataset.loading);
+            });
+    });
+};
 
-                    // restore removed element if we removed it optimistically
-                    if (removedClone && removedParent) {
-                        // insert before saved next sibling (or append)
-                        removedParent.insertBefore(
-                            removedClone,
-                            removedNext || null,
-                        );
-                    }
-
-                    if (error?.response?.status === 401) {
-                        showToast(
-                            "warning",
-                            "Please authenticate first to add cars into watchlist.",
-                        );
-                    } else {
-                        showToast(
-                            "warning",
-                            "Internal Server Error. Please try again later.",
-                        );
-                    }
-                })
-                .finally(() => {
-                    allButtons.forEach((b) => delete b.dataset.loading);
-                });
-        });
-    };
 
     /* ==========================
        Show Phone Number
