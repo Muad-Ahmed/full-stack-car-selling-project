@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CarImage extends Model
 {
@@ -35,6 +36,8 @@ class CarImage extends Model
             return $this->image_path;
         }
 
-        return Storage::url($this->image_path);
+        return Storage::disk('public')->url(
+            Str::after($this->image_path, 'public/')
+        );
     }
 }
