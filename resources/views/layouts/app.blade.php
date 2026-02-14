@@ -31,6 +31,26 @@
     @endsession
     {{-- ==================== End Toast ==================== --}}
 
+    {{-- ==================== Delete Modal ==================== --}}
+    <div id="deleteModal" class="confirm-modal hidden">
+        <div class="confirm-box">
+            <h3>Confirm Delete</h3>
+            <p>This action cannot be undone.</p>
+
+            <form id="deleteForm" method="POST">
+                @csrf
+                @method('DELETE')
+
+                <div class="confirm-actions">
+                    <button type="button" onclick="closeDeleteModal()">Cancel</button>
+                    <button type="submit" class="danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {{-- ====================End Delete Modal ==================== --}}
+
+
 
     {{ $slot }}
 
