@@ -324,6 +324,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (svgHidden) svgHidden.classList.remove("hidden");
                     if (svgVisible) svgVisible.classList.add("hidden");
 
+                    // If the server indicates the car was removed from watchlist,
+                    // remove the car's element from the DOM immediately —
+                    // but only when we're on the watchlist page to avoid
+                    // removing items on other pages (e.g. home/search).
+                    if (response.data && response.data.added === false) {
+                        if (window.location.pathname.includes("/watchlist")) {
+                            const carItem = btn.closest(".car-item");
+                            if (carItem) carItem.remove();
+                        }
+                    }
+
                     showToast("success", response.data.message || "Updated");
                 })
                 .catch((error) => {
