@@ -49,7 +49,7 @@ class CarController extends Controller
             return redirect()->route('profile.index')
                 ->with('warning', 'Please provide phone number');
         }
-        
+
         $data = $request->validated();
 
         // Get features data
@@ -65,9 +65,9 @@ class CarController extends Controller
 
         // Iterate and create images
         foreach ($images as $i => $image) {
-            // Save image on file system
-            $path = $image->store('public/images');
-            // Create record in the database
+            // Save image on the public disk under "images/"
+            $path = $image->store('images', 'public');
+            // Create record in the database (store path relative to public disk)
             $car->images()->create(['image_path' => $path, 'position' => $i + 1]);
         }
 
@@ -247,7 +247,12 @@ class CarController extends Controller
 
         // Iterate over images to delete and delete them from file system
         foreach ($imagesToDelete as $image) {
-            if (Storage::exists($image->image_path)) {
+            // Support both old-style stored paths that included the "public/" prefix
+            // and newer entries that contain the path relative to the public disk.
+            $diskPath = preg_replace('#^public/#', '', $image->image_path);
+            if (Storage::disk('public')->exists($diskPath)) {
+                Storage::disk('public')->delete($diskPath);
+            } elseif (Storage::exists($image->image_path)) {
                 Storage::delete($image->image_path);
             }
         }
@@ -261,6 +266,9 @@ class CarController extends Controller
         }
 
         // Redirect back to car.images route
+        // Update car timestamp so UI image URLs change and bypass browser cache
+        $car->touch();
+
         return redirect()->back()
             ->with('success', 'Car images were updated');
     }
@@ -275,8 +283,8 @@ class CarController extends Controller
         // Select max position of car images
         $position = $car->images()->max('position') ?? 0;
         foreach ($images as $image) {
-            // Save it on the file system
-            $path = $image->store('public/images');
+            // Save it on the public disk under "images/"
+            $path = $image->store('images', 'public');
             // Save it in the database
             $car->images()->create([
                 'image_path' => $path,
@@ -284,6 +292,9 @@ class CarController extends Controller
             ]);
             $position++;
         }
+
+        // Update car timestamp so UI image URLs change and bypass browser cache
+        $car->touch();
 
         return redirect()->back()
             ->with('success', 'New images were added');

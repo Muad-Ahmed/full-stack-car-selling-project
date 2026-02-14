@@ -97,7 +97,7 @@
                                     </div>
                                 </div>
                                 <div class="flex">
-                                    <button type="button" class="btn btn-find-a-car-reset">
+                                    <button type="reset" class="btn btn-find-a-car-reset">
                                         Reset
                                     </button>
                                     <button class="btn btn-primary btn-find-a-car-submit">

@@ -306,41 +306,85 @@ document.addEventListener("DOMContentLoaded", function () {
        Add to Watchlist (NO alert)
     ========================== */
     const initAddToWatchlist = () => {
-        // Use event delegation so dynamically-rendered buttons work as well
-        document.addEventListener("click", (ev) => {
-            const btn = ev.target.closest && ev.target.closest(".btn-heart");
-            if (!btn) return;
-            ev.preventDefault();
-
-            const url = btn.dataset.url;
-            if (!url) return;
-
-            axios
-                .post(url)
-                .then((response) => {
-                    // Toggle visible/hidden svgs
-                    const svgHidden = btn.querySelector("svg.hidden");
-                    const svgVisible = btn.querySelector("svg:not(.hidden)");
-                    if (svgHidden) svgHidden.classList.remove("hidden");
-                    if (svgVisible) svgVisible.classList.add("hidden");
-
-                    showToast("success", response.data.message || "Updated");
-                })
-                .catch((error) => {
-                    if (error?.response?.status === 401) {
-                        showToast(
-                            "warning",
-                            "Please authenticate first to add cars into watchlist.",
-                        );
-                    } else {
-                        showToast(
-                            "warning",
-                            "Internal Server Error. Please try again later.",
-                        );
-                    }
-                });
-        });
+    const extractCarKey = (url) => {
+        if (!url) return null;
+        const m = String(url).match(/(\d+)(?=[^\/]*$)/);
+        return m ? m[1] : url;
     };
+
+    document.addEventListener("click", (ev) => {
+        const btn = ev.target?.closest?.(".btn-heart");
+        if (!btn) return;
+        ev.preventDefault();
+
+        const url = btn.dataset.url;
+        if (!url) return;
+        if (btn.dataset.loading === "1") return; // prevent double
+
+        const clickedCarKey = btn.dataset.carId ?? extractCarKey(url) ?? url;
+
+        const allButtons = Array.from(document.querySelectorAll(".btn-heart")).filter((b) => {
+            const bUrl = b.dataset.url || "";
+            const bKey = b.dataset.carId ?? extractCarKey(bUrl) ?? bUrl;
+            return String(bKey) === String(clickedCarKey);
+        });
+
+        const svgs = btn.querySelectorAll("svg");
+        const hasFilled = svgs.length >= 2
+            ? !svgs[1].classList.contains("hidden")
+            : !svgs[0].classList.contains("hidden");
+        const currentlyAdded = Boolean(hasFilled);
+
+        const optimisticAdded = !currentlyAdded;
+
+        const applyStateTo = (buttons, added) => {
+            buttons.forEach((b) => {
+                const s = Array.from(b.querySelectorAll("svg"));
+                if (s.length >= 2) {
+                    s[0].classList.toggle("hidden", added); // outline
+                    s[1].classList.toggle("hidden", !added); // filled
+                } else if (s.length === 1) {
+                    s[0].classList.toggle("hidden");
+                }
+            });
+        };
+
+        applyStateTo(allButtons, optimisticAdded);
+
+        allButtons.forEach((b) => (b.dataset.loading = "1"));
+
+        axios.post(url)
+            .then((response) => {
+                const serverAdded = response?.data?.added ?? optimisticAdded;
+
+                applyStateTo(allButtons, Boolean(serverAdded));
+
+                showToast(
+                    "success",
+                    response?.data?.message || "Updated"
+                );
+            })
+            .catch((error) => {
+                applyStateTo(allButtons, currentlyAdded);
+
+                if (error?.response?.status === 401) {
+                    showToast(
+                        "warning",
+                        "Please authenticate first to add cars into watchlist."
+                    );
+                } else {
+                    showToast(
+                        "warning",
+                        "Internal Server Error. Please try again later."
+                    );
+                }
+            })
+            .finally(() => {
+                allButtons.forEach((b) => delete b.dataset.loading);
+            });
+    });
+};
+
 
     /* ==========================
        Show Phone Number
@@ -361,6 +405,33 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     /* ==========================
+       Delete Modal (custom)
+    ========================== */
+    const deleteModal = document.getElementById("deleteModal");
+    const deleteForm = document.getElementById("deleteForm");
+
+    window.openDeleteModal = (action) => {
+        if (!deleteModal || !deleteForm) return;
+        deleteForm.action = action;
+        deleteModal.classList.remove("hidden");
+    };
+
+    window.closeDeleteModal = () => {
+        if (!deleteModal) return;
+        deleteModal.classList.add("hidden");
+    };
+
+    // close when clicking outside box
+    deleteModal?.addEventListener("click", (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+    });
+
+    // close on Escape
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeDeleteModal();
+    });
+
+    /* ==========================
        Init Calls
     ========================== */
     initSlider();
@@ -369,4 +440,29 @@ document.addEventListener("DOMContentLoaded", function () {
     initMobileNavbar();
     initAddToWatchlist();
     initShowPhoneNumber();
+    const initSortDropdown = () => {
+        const select = document.querySelector(".sort-dropdown");
+        if (!select) return;
+
+        // Initialize select from current URL
+        const params = new URLSearchParams(window.location.search);
+        const current = params.get("sort") || "";
+        if (current) select.value = current;
+
+        select.addEventListener("change", () => {
+            const params = new URLSearchParams(window.location.search);
+            const val = select.value;
+            if (val) params.set("sort", val);
+            else params.delete("sort");
+            // Reset pagination when sorting changes
+            params.delete("page");
+
+            const newUrl =
+                window.location.pathname +
+                (params.toString() ? "?" + params.toString() : "");
+            window.location.href = newUrl;
+        });
+    };
+
+    initSortDropdown();
 });
