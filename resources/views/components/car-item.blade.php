@@ -5,9 +5,15 @@
         @php
             $primaryUrl = $car->primaryImage?->getUrl();
             $version = $car->updated_at?->timestamp ?? now()->timestamp;
+            $imgSrc = $primaryUrl
+                ? (str_starts_with($primaryUrl, 'http')
+                    ? $primaryUrl
+                    : $primaryUrl . '?v=' . $version)
+                : '/img/no_image.jpg';
         @endphp
-        <img src="{{ $primaryUrl ? $primaryUrl . '?v=' . $version : '/img/no_image.jpg' }}" alt="{{ $car->maker->name }}"
-            class="car-item-img rounded-t" />
+
+        <img src="{{ $imgSrc }}" alt="{{ $car->maker->name }}" class="car-item-img rounded-t" />
+
     </a>
     <div class="p-medium">
         <div class="flex items-center justify-between">
