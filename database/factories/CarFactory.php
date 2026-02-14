@@ -43,7 +43,7 @@ class CarFactory extends Factory
             'phone' => function (array $attributes) {
                 return User::find($attributes['user_id'])->phone;
             },
-            'description' => fake()->text(2000),
+            'description' => fake()->text(1000),
             // randomly set published_at to null. But the datetime should be in the past
             'published_at' => fake()->optional(0.9)->dateTimeBetween('-1 month', '+1 day'),
         ];

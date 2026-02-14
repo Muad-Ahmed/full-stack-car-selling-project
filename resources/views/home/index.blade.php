@@ -88,6 +88,26 @@
             </div>
         </section>
         <!--/ New Cars -->
+        {{-- Find More Section --}}
+        <section class="find-more-section">
+            <div class="container">
+                <h2>Didn't find what you're looking for?</h2>
+                <p>Explore our full inventory with hundreds of cars.</p>
+                <a href="{{ route('car.search') }}" class="btn btn-hero-slider">Browse All Cars</a>
+            </div>
+        </section>
+        {{-- End Find More Section --}}
+
+        {{-- Search Icon in Mobile --}}
+        <a href="{{ route('car.search') }}" class="floating-search-btn" id="floatingSearchBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+        </a>
+        {{--End Search Icon in Mobile --}}
+
     </main>
 
 </x-app-layout>

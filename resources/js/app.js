@@ -1,310 +1,372 @@
 import axios from "axios";
 import "./bootstrap";
+
+/* ==========================
+   Toast Helper (GLOBAL)
+========================== */
+function showToast(type, message) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "toast-wrapper";
+
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}-message`;
+
+    toast.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            ${
+                type === "success"
+                    ? `<path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12.75 11.25 15 15 9.75M21 12
+                        a9 9 0 1 1-18 0
+                        9 9 0 0 1 18 0Z" />`
+                    : `<path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v3.75m0 4.125h.008v.008H12v-.008Z
+                        m9-3.375
+                        a9 9 0 1 1-18 0
+                        9 9 0 0 1 18 0Z" />`
+            }
+        </svg>
+        <span>${message}</span>
+    `;
+
+    wrapper.appendChild(toast);
+    document.body.appendChild(wrapper);
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(-10px)";
+        setTimeout(() => wrapper.remove(), 400);
+    }, 4000);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+    /* ==========================
+       Floating Search Button
+    ========================== */
+    const btn = document.getElementById("floatingSearchBtn");
+    const SHOW_AFTER = 1180;
+    const HIDE_BEFORE_BOTTOM = 350;
+
+    if (btn) {
+        window.addEventListener("scroll", () => {
+            if (window.innerWidth > 768) {
+                btn.style.opacity = "0";
+                btn.style.pointerEvents = "none";
+                return;
+            }
+
+            const scrollTop = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            const reachedShowPoint = scrollTop >= SHOW_AFTER;
+            const nearBottom =
+                scrollTop + windowHeight >= documentHeight - HIDE_BEFORE_BOTTOM;
+
+            if (reachedShowPoint && !nearBottom) {
+                btn.style.opacity = "0.8";
+                btn.style.pointerEvents = "auto";
+            } else {
+                btn.style.opacity = "0";
+                btn.style.pointerEvents = "none";
+            }
+        });
+    }
+
+    /* ==========================
+       Hero Slider
+    ========================== */
     const initSlider = () => {
         const slides = document.querySelectorAll(".hero-slide");
-        let currentIndex = 0; // Track the current slide
+        if (!slides.length) return;
+
+        let currentIndex = 0;
         const totalSlides = slides.length;
 
-        function moveToSlide(n) {
+        const moveToSlide = (n) => {
+            const normalized = ((n % totalSlides) + totalSlides) % totalSlides;
             slides.forEach((slide, index) => {
-                slide.style.transform = `translateX(${-100 * n}%)`;
-                if (n === index) {
-                    slide.classList.add("active");
-                } else {
-                    slide.classList.remove("active");
-                }
+                slide.style.transform = `translateX(${-100 * normalized}%)`;
+                slide.classList.toggle("active", normalized === index);
             });
-            currentIndex = n;
+            currentIndex = normalized;
+        };
+
+        const nextSlide = () =>
+            moveToSlide(
+                currentIndex === totalSlides - 1 ? 0 : currentIndex + 1,
+            );
+        const prevSlide = () =>
+            moveToSlide(
+                currentIndex === 0 ? totalSlides - 1 : currentIndex - 1,
+            );
+
+        // --- Auto-play setup ---
+        const SLIDE_INTERVAL = 5000; // 5 seconds
+        let autoplayTimer = null;
+        let interactionPaused = false; // true while user is hovering or interacting
+
+        const startAutoplay = (immediate = false) => {
+            if (autoplayTimer || totalSlides <= 1 || interactionPaused) return;
+            // If immediate is true, advance first then schedule next moves
+            if (immediate) nextSlide();
+            autoplayTimer = setInterval(() => nextSlide(), SLIDE_INTERVAL);
+        };
+
+        const stopAutoplay = () => {
+            if (!autoplayTimer) return;
+            clearInterval(autoplayTimer);
+            autoplayTimer = null;
+        };
+
+        const nextBtn = document.querySelector(".hero-slide-next");
+        const prevBtn = document.querySelector(".hero-slide-prev");
+
+        nextBtn?.addEventListener("click", (e) => {
+            e.preventDefault();
+            nextSlide();
+        });
+        prevBtn?.addEventListener("click", (e) => {
+            e.preventDefault();
+            prevSlide();
+        });
+
+        // Pause while pointer/keyboard/focus interaction is active on the slider
+        const sliderWrapper = document.querySelector(".hero-slides");
+        if (sliderWrapper) {
+            sliderWrapper.addEventListener("mouseenter", () => {
+                interactionPaused = true;
+                stopAutoplay();
+            });
+            sliderWrapper.addEventListener("mouseleave", () => {
+                interactionPaused = false;
+                startAutoplay();
+            });
+            sliderWrapper.addEventListener("focusin", () => {
+                interactionPaused = true;
+                stopAutoplay();
+            });
+            sliderWrapper.addEventListener("focusout", () => {
+                interactionPaused = false;
+                startAutoplay();
+            });
         }
 
-        // Function to go to the next slide
-        function nextSlide() {
-            if (currentIndex === totalSlides - 1) {
-                moveToSlide(0); // Go to the first slide if we're at the last
-            } else {
-                moveToSlide(currentIndex + 1);
-            }
-        }
+        // Pause while user is actively using nav buttons (pointer/touch); resume shortly afterwards
+        const resumeAfterInteraction = () =>
+            setTimeout(() => {
+                if (!interactionPaused) startAutoplay();
+            }, 800);
 
-        // Function to go to the previous slide
-        function prevSlide() {
-            if (currentIndex === 0) {
-                moveToSlide(totalSlides - 1); // Go to the last slide if we're at the first
-            } else {
-                moveToSlide(currentIndex - 1);
-            }
-        }
+        [nextBtn, prevBtn].forEach((btn) => {
+            if (!btn) return;
+            btn.addEventListener("pointerdown", () => {
+                interactionPaused = true;
+                stopAutoplay();
+            });
+            btn.addEventListener("pointerup", () => {
+                interactionPaused = false;
+                resumeAfterInteraction();
+            });
+            // For keyboard users
+            btn.addEventListener("focus", () => {
+                interactionPaused = true;
+                stopAutoplay();
+            });
+            btn.addEventListener("blur", () => {
+                interactionPaused = false;
+                resumeAfterInteraction();
+            });
+        });
 
-        // Example usage with buttons
-        // Assuming you have buttons with classes `.next` and `.prev` for navigation
-        const carouselNextButton = document.querySelector(".hero-slide-next");
-        if (carouselNextButton) {
-            carouselNextButton.addEventListener("click", nextSlide);
-        }
-        const carouselPrevButton = document.querySelector(".hero-slide-prev");
-        if (carouselPrevButton) {
-            carouselPrevButton.addEventListener("click", prevSlide);
-        }
+        // Pause when page not visible to conserve resources
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) stopAutoplay();
+            else if (!interactionPaused) startAutoplay();
+        });
 
-        // Initialize the slider
+        // Initialize and start autoplay
         moveToSlide(0);
+        startAutoplay();
+    };
+
+    /* ==========================
+       Image Picker
+    ========================== */
+    /* ==========================
+       Car Images Carousel
+    ========================== */
+    const initCarCarousel = () => {
+        const carousel = document.querySelector(".car-images-carousel");
+        if (!carousel) return;
+
+        const activeImage =
+            carousel.querySelector("#activeImage") ||
+            carousel.querySelector(".car-active-image");
+        const thumbnails = carousel.querySelectorAll(
+            ".car-image-thumbnails img",
+        );
+        if (!activeImage || !thumbnails.length) return;
+
+        const normalize = (url) => {
+            try {
+                return new URL(url, location.origin).href;
+            } catch (e) {
+                return url;
+            }
+        };
+
+        const thumbList = Array.from(thumbnails);
+        const thumbSrcs = thumbList.map((img) => normalize(img.src));
+
+        // set current index based on activeImage src if possible
+        const activeSrc = normalize(activeImage.src || "");
+        let currentIndex = thumbSrcs.indexOf(activeSrc);
+        if (currentIndex === -1) currentIndex = 0;
+
+        const updateActive = (index) => {
+            const len = thumbList.length;
+            currentIndex = ((index % len) + len) % len;
+            const src = thumbList[currentIndex].src;
+            if (src) activeImage.src = src;
+            thumbList.forEach((img, i) =>
+                img.classList.toggle("active-thumb", i === currentIndex),
+            );
+        };
+
+        thumbList.forEach((img, i) =>
+            img.addEventListener("click", () => updateActive(i)),
+        );
+
+        const prevBtn = carousel.querySelector("#prevButton");
+        const nextBtn = carousel.querySelector("#nextButton");
+
+        if (prevBtn)
+            prevBtn.addEventListener("click", (ev) => {
+                ev.preventDefault();
+                updateActive(currentIndex - 1);
+            });
+        if (nextBtn)
+            nextBtn.addEventListener("click", (ev) => {
+                ev.preventDefault();
+                updateActive(currentIndex + 1);
+            });
+
+        // initialize active state
+        updateActive(currentIndex);
     };
 
     const initImagePicker = () => {
         const fileInput = document.querySelector("#carFormImageUpload");
         const imagePreview = document.querySelector("#imagePreviews");
-        if (!fileInput) {
-            return;
-        }
+        if (!fileInput || !imagePreview) return;
+
         fileInput.onchange = (ev) => {
             imagePreview.innerHTML = "";
-            const files = ev.target.files;
-            for (let file of files) {
-                readFile(file).then((url) => {
-                    const img = createImage(url);
-                    imagePreview.append(img);
-                });
-            }
-        };
-
-        function readFile(file) {
-            return new Promise((resolve, reject) => {
+            [...ev.target.files].forEach((file) => {
                 const reader = new FileReader();
-                reader.onload = (ev) => {
-                    resolve(ev.target.result);
-                };
-                reader.onerror = (ev) => {
-                    reject(ev);
+                reader.onload = (e) => {
+                    const a = document.createElement("a");
+                    a.classList.add("car-form-image-preview");
+                    a.innerHTML = `<img src="${e.target.result}" />`;
+                    imagePreview.append(a);
                 };
                 reader.readAsDataURL(file);
             });
-        }
-
-        function createImage(url) {
-            const a = document.createElement("a");
-            a.classList.add("car-form-image-preview");
-            a.innerHTML = `
-        <img src="${url}" />
-      `;
-            return a;
-        }
+        };
     };
 
+    /* ==========================
+       Mobile Navbar
+    ========================== */
     const initMobileNavbar = () => {
         const btnToggle = document.querySelector(".btn-navbar-toggle");
+        const navbarMenu = document.querySelector(".navbar-menu");
+        if (!btnToggle) return;
 
-        btnToggle.onclick = () => {
+        btnToggle.onclick = () =>
             document.body.classList.toggle("navbar-opened");
-        };
-    };
 
-    const imageCarousel = () => {
-        const carousel = document.querySelector(".car-images-carousel");
-        if (!carousel) {
-            return;
-        }
-        const thumbnails = document.querySelectorAll(
-            ".car-image-thumbnails img"
-        );
-        const activeImage = document.getElementById("activeImage");
-        const prevButton = document.getElementById("prevButton");
-        const nextButton = document.getElementById("nextButton");
+        document.addEventListener("click", (event) => {
+            const isInside =
+                btnToggle.contains(event.target) ||
+                navbarMenu?.contains(event.target);
 
-        let currentIndex = 0;
-
-        // Initialize active thumbnail class
-        thumbnails.forEach((thumbnail, index) => {
-            if (thumbnail.src === activeImage.src) {
-                thumbnail.classList.add("active-thumbnail");
-                currentIndex = index;
+            if (
+                !isInside &&
+                document.body.classList.contains("navbar-opened")
+            ) {
+                document.body.classList.remove("navbar-opened");
             }
         });
-
-        // Function to update the active image and thumbnail
-        const updateActiveImage = (index) => {
-            activeImage.src = thumbnails[index].src;
-            thumbnails.forEach((thumbnail) =>
-                thumbnail.classList.remove("active-thumbnail")
-            );
-            thumbnails[index].classList.add("active-thumbnail");
-        };
-
-        // Add click event listeners to thumbnails
-        thumbnails.forEach((thumbnail, index) => {
-            thumbnail.addEventListener("click", () => {
-                currentIndex = index;
-                updateActiveImage(currentIndex);
-            });
-        });
-
-        // Add click event listener to the previous button
-        prevButton.addEventListener("click", () => {
-            currentIndex =
-                (currentIndex - 1 + thumbnails.length) % thumbnails.length;
-            updateActiveImage(currentIndex);
-        });
-
-        // Add click event listener to the next button
-        nextButton.addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % thumbnails.length;
-            updateActiveImage(currentIndex);
-        });
     };
 
-    const initMobileFilters = () => {
-        const filterButton = document.querySelector(".show-filters-button");
-        const sidebar = document.querySelector(".search-cars-sidebar");
-        const closeButton = document.querySelector(".close-filters-button");
-
-        if (!filterButton) return;
-
-        console.log(filterButton.classList);
-        filterButton.addEventListener("click", () => {
-            if (sidebar.classList.contains("opened")) {
-                sidebar.classList.remove("opened");
-            } else {
-                sidebar.classList.add("opened");
-            }
-        });
-
-        if (closeButton) {
-            closeButton.addEventListener("click", () => {
-                sidebar.classList.remove("opened");
-            });
-        }
-    };
-
-    const initCascadingDropdown = (parentSelector, childSelector) => {
-        const parentDropdown = document.querySelector(parentSelector);
-        const childDropdown = document.querySelector(childSelector);
-
-        if (!parentDropdown || !childDropdown) return;
-
-        hideModelOptions(parentDropdown.value);
-
-        parentDropdown.addEventListener("change", (ev) => {
-            hideModelOptions(ev.target.value);
-            childDropdown.value = "";
-        });
-
-        function hideModelOptions(parentValue) {
-            const models = childDropdown.querySelectorAll("option");
-            models.forEach((model) => {
-                if (
-                    model.dataset.parent === parentValue ||
-                    model.value === ""
-                ) {
-                    model.style.display = "block";
-                } else {
-                    model.style.display = "none";
-                }
-            });
-        }
-    };
-
-    const initSortingDropdown = () => {
-        const sortingDropdown = document.querySelector(".sort-dropdown");
-        if (!sortingDropdown) return;
-
-        // Init sorting dropdown with the current value
-        const url = new URL(window.location.href);
-        const sortValue = url.searchParams.get("sort");
-        if (sortValue) {
-            sortingDropdown.value = sortValue;
-        }
-
-        sortingDropdown.addEventListener("change", (ev) => {
-            const url = new URL(window.location.href);
-            url.searchParams.set("sort", ev.target.value);
-            window.location.href = url.toString();
-        });
-    };
-
+    /* ==========================
+       Add to Watchlist (NO alert)
+    ========================== */
     const initAddToWatchlist = () => {
-        // Select add to watchlist buttons
-        const buttons = document.querySelectorAll(".btn-heart");
+        // Use event delegation so dynamically-rendered buttons work as well
+        document.addEventListener("click", (ev) => {
+            const btn = ev.target.closest && ev.target.closest(".btn-heart");
+            if (!btn) return;
+            ev.preventDefault();
 
-        // Iterate over these buttons and add click event listener
-        buttons.forEach((button) => {
-            button.addEventListener("click", (ev) => {
-                // Get the button element on which click happened
-                const button = ev.currentTarget;
-                // We added data-url attribute to the button in blade file
-                // get the url
-                const url = button.dataset.url;
-                // Make request on the URL to add or remove the car from watchlist
-                axios
-                    .post(url)
-                    .then((response) => {
-                        // Select both svg tags of the button
-                        const toShow = button.querySelector("svg.hidden");
-                        const toHide = button.querySelector("svg:not(.hidden)");
+            const url = btn.dataset.url;
+            if (!url) return;
 
-                        // Which was hidden must be displayed
-                        toShow.classList.remove("hidden");
-                        // Which was displayed must be hidden
-                        toHide.classList.add("hidden");
-                        // Show alert to the user
-                        alert(response.data.message);
-                    })
-                    .catch((error) => {
-                        console.error(error.response);
-                        if (error?.response?.status === 401) {
-                            alert(
-                                "Please authenticate first to add cars into watchlist."
-                            );
-                        } else {
-                            alert(
-                                "Internal Server Error. Please Try again later!"
-                            );
-                        }
-                    });
-            });
+            axios
+                .post(url)
+                .then((response) => {
+                    // Toggle visible/hidden svgs
+                    const svgHidden = btn.querySelector("svg.hidden");
+                    const svgVisible = btn.querySelector("svg:not(.hidden)");
+                    if (svgHidden) svgHidden.classList.remove("hidden");
+                    if (svgVisible) svgVisible.classList.add("hidden");
+
+                    showToast("success", response.data.message || "Updated");
+                })
+                .catch((error) => {
+                    if (error?.response?.status === 401) {
+                        showToast(
+                            "warning",
+                            "Please authenticate first to add cars into watchlist.",
+                        );
+                    } else {
+                        showToast(
+                            "warning",
+                            "Internal Server Error. Please try again later.",
+                        );
+                    }
+                });
         });
     };
 
+    /* ==========================
+       Show Phone Number
+    ========================== */
     const initShowPhoneNumber = () => {
-        // Select the element we need to listen to click
         const span = document.querySelector(".car-details-phone-view");
+        if (!span) return;
 
         span.addEventListener("click", (ev) => {
             ev.preventDefault();
-            // Get the url on which we should make Ajax request
-            const url = span.dataset.url;
-
-            // Make the request
-            axios.post(url).then((response) => {
-                // Get response from backend and take actual phone number
+            axios.post(span.dataset.url).then((response) => {
                 const phone = response.data.phone;
-                // Find the <a> element
                 const a = span.parentElement;
-                // and update its href attribute with full phone number received from backend
-                a.href = "tel:" + phone;
-                // Find the element which contains obfuscated text and update it
-                const phoneEl = a.querySelector(".text-phone");
-                phoneEl.innerText = phone;
+                if (a) a.href = "tel:" + phone;
+                a?.querySelector(".text-phone")?.replaceWith(phone);
             });
         });
     };
+
+    /* ==========================
+       Init Calls
+    ========================== */
     initSlider();
+    initCarCarousel();
     initImagePicker();
     initMobileNavbar();
-    imageCarousel();
-    initMobileFilters();
-    initCascadingDropdown("#makerSelect", "#modelSelect");
-    initCascadingDropdown("#stateSelect", "#citySelect");
-    initSortingDropdown();
     initAddToWatchlist();
     initShowPhoneNumber();
-
-    ScrollReveal().reveal(".hero-slide.active .hero-slider-title", {
-        delay: 200,
-        reset: true,
-    });
-    ScrollReveal().reveal(".hero-slide.active .hero-slider-content", {
-        delay: 200,
-        origin: "bottom",
-        distance: "50%",
-    });
 });
