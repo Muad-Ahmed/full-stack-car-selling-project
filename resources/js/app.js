@@ -369,4 +369,29 @@ document.addEventListener("DOMContentLoaded", function () {
     initMobileNavbar();
     initAddToWatchlist();
     initShowPhoneNumber();
+    const initSortDropdown = () => {
+        const select = document.querySelector(".sort-dropdown");
+        if (!select) return;
+
+        // Initialize select from current URL
+        const params = new URLSearchParams(window.location.search);
+        const current = params.get("sort") || "";
+        if (current) select.value = current;
+
+        select.addEventListener("change", () => {
+            const params = new URLSearchParams(window.location.search);
+            const val = select.value;
+            if (val) params.set("sort", val);
+            else params.delete("sort");
+            // Reset pagination when sorting changes
+            params.delete("page");
+
+            const newUrl =
+                window.location.pathname +
+                (params.toString() ? "?" + params.toString() : "");
+            window.location.href = newUrl;
+        });
+    };
+
+    initSortDropdown();
 });
