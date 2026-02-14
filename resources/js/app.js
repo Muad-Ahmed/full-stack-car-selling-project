@@ -114,6 +114,69 @@ document.addEventListener("DOMContentLoaded", function () {
     /* ==========================
        Image Picker
     ========================== */
+    /* ==========================
+       Car Images Carousel
+    ========================== */
+    const initCarCarousel = () => {
+        const carousel = document.querySelector(".car-images-carousel");
+        if (!carousel) return;
+
+        const activeImage =
+            carousel.querySelector("#activeImage") ||
+            carousel.querySelector(".car-active-image");
+        const thumbnails = carousel.querySelectorAll(
+            ".car-image-thumbnails img",
+        );
+        if (!activeImage || !thumbnails.length) return;
+
+        const normalize = (url) => {
+            try {
+                return new URL(url, location.origin).href;
+            } catch (e) {
+                return url;
+            }
+        };
+
+        const thumbList = Array.from(thumbnails);
+        const thumbSrcs = thumbList.map((img) => normalize(img.src));
+
+        // set current index based on activeImage src if possible
+        const activeSrc = normalize(activeImage.src || "");
+        let currentIndex = thumbSrcs.indexOf(activeSrc);
+        if (currentIndex === -1) currentIndex = 0;
+
+        const updateActive = (index) => {
+            const len = thumbList.length;
+            currentIndex = ((index % len) + len) % len;
+            const src = thumbList[currentIndex].src;
+            if (src) activeImage.src = src;
+            thumbList.forEach((img, i) =>
+                img.classList.toggle("active-thumb", i === currentIndex),
+            );
+        };
+
+        thumbList.forEach((img, i) =>
+            img.addEventListener("click", () => updateActive(i)),
+        );
+
+        const prevBtn = carousel.querySelector("#prevButton");
+        const nextBtn = carousel.querySelector("#nextButton");
+
+        if (prevBtn)
+            prevBtn.addEventListener("click", (ev) => {
+                ev.preventDefault();
+                updateActive(currentIndex - 1);
+            });
+        if (nextBtn)
+            nextBtn.addEventListener("click", (ev) => {
+                ev.preventDefault();
+                updateActive(currentIndex + 1);
+            });
+
+        // initialize active state
+        updateActive(currentIndex);
+    };
+
     const initImagePicker = () => {
         const fileInput = document.querySelector("#carFormImageUpload");
         const imagePreview = document.querySelector("#imagePreviews");
@@ -163,37 +226,39 @@ document.addEventListener("DOMContentLoaded", function () {
        Add to Watchlist (NO alert)
     ========================== */
     const initAddToWatchlist = () => {
-        document.querySelectorAll(".btn-heart").forEach((button) => {
-            button.addEventListener("click", (ev) => {
-                const btn = ev.currentTarget;
-                const url = btn.dataset.url;
+        // Use event delegation so dynamically-rendered buttons work as well
+        document.addEventListener("click", (ev) => {
+            const btn = ev.target.closest && ev.target.closest(".btn-heart");
+            if (!btn) return;
+            ev.preventDefault();
 
-                axios
-                    .post(url)
-                    .then((response) => {
-                        btn.querySelector("svg.hidden")?.classList.remove(
-                            "hidden",
-                        );
-                        btn.querySelector("svg:not(.hidden)")?.classList.add(
-                            "hidden",
-                        );
+            const url = btn.dataset.url;
+            if (!url) return;
 
-                        showToast("success", response.data.message);
-                    })
-                    .catch((error) => {
-                        if (error?.response?.status === 401) {
-                            showToast(
-                                "warning",
-                                "Please authenticate first to add cars into watchlist.",
-                            );
-                        } else {
-                            showToast(
-                                "warning",
-                                "Internal Server Error. Please try again later.",
-                            );
-                        }
-                    });
-            });
+            axios
+                .post(url)
+                .then((response) => {
+                    // Toggle visible/hidden svgs
+                    const svgHidden = btn.querySelector("svg.hidden");
+                    const svgVisible = btn.querySelector("svg:not(.hidden)");
+                    if (svgHidden) svgHidden.classList.remove("hidden");
+                    if (svgVisible) svgVisible.classList.add("hidden");
+
+                    showToast("success", response.data.message || "Updated");
+                })
+                .catch((error) => {
+                    if (error?.response?.status === 401) {
+                        showToast(
+                            "warning",
+                            "Please authenticate first to add cars into watchlist.",
+                        );
+                    } else {
+                        showToast(
+                            "warning",
+                            "Internal Server Error. Please try again later.",
+                        );
+                    }
+                });
         });
     };
 
@@ -216,36 +281,10 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     /* ==========================
-       Delete Modal (custom)
-    ========================== */
-    const deleteModal = document.getElementById("deleteModal");
-    const deleteForm = document.getElementById("deleteForm");
-
-    window.openDeleteModal = (action) => {
-        if (!deleteModal || !deleteForm) return;
-        deleteForm.action = action;
-        deleteModal.classList.remove("hidden");
-    };
-
-    window.closeDeleteModal = () => {
-        if (!deleteModal) return;
-        deleteModal.classList.add("hidden");
-    };
-
-    // close when clicking outside box
-    deleteModal?.addEventListener("click", (e) => {
-        if (e.target === deleteModal) closeDeleteModal();
-    });
-
-    // close on Escape
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeDeleteModal();
-    });
-
-    /* ==========================
        Init Calls
     ========================== */
     initSlider();
+    initCarCarousel();
     initImagePicker();
     initMobileNavbar();
     initAddToWatchlist();
