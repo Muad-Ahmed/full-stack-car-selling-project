@@ -85,11 +85,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const totalSlides = slides.length;
 
         const moveToSlide = (n) => {
+            const normalized = ((n % totalSlides) + totalSlides) % totalSlides;
             slides.forEach((slide, index) => {
-                slide.style.transform = `translateX(${-100 * n}%)`;
-                slide.classList.toggle("active", n === index);
+                slide.style.transform = `translateX(${-100 * normalized}%)`;
+                slide.classList.toggle("active", normalized === index);
             });
-            currentIndex = n;
+            currentIndex = normalized;
         };
 
         const nextSlide = () =>
@@ -101,14 +102,93 @@ document.addEventListener("DOMContentLoaded", function () {
                 currentIndex === 0 ? totalSlides - 1 : currentIndex - 1,
             );
 
-        document
-            .querySelector(".hero-slide-next")
-            ?.addEventListener("click", nextSlide);
-        document
-            .querySelector(".hero-slide-prev")
-            ?.addEventListener("click", prevSlide);
+        // --- Auto-play setup ---
+        const SLIDE_INTERVAL = 5000; // 5 seconds
+        let autoplayTimer = null;
+        let interactionPaused = false; // true while user is hovering or interacting
 
+        const startAutoplay = (immediate = false) => {
+            if (autoplayTimer || totalSlides <= 1 || interactionPaused) return;
+            // If immediate is true, advance first then schedule next moves
+            if (immediate) nextSlide();
+            autoplayTimer = setInterval(() => nextSlide(), SLIDE_INTERVAL);
+        };
+
+        const stopAutoplay = () => {
+            if (!autoplayTimer) return;
+            clearInterval(autoplayTimer);
+            autoplayTimer = null;
+        };
+
+        const nextBtn = document.querySelector(".hero-slide-next");
+        const prevBtn = document.querySelector(".hero-slide-prev");
+
+        nextBtn?.addEventListener("click", (e) => {
+            e.preventDefault();
+            nextSlide();
+        });
+        prevBtn?.addEventListener("click", (e) => {
+            e.preventDefault();
+            prevSlide();
+        });
+
+        // Pause while pointer/keyboard/focus interaction is active on the slider
+        const sliderWrapper = document.querySelector(".hero-slides");
+        if (sliderWrapper) {
+            sliderWrapper.addEventListener("mouseenter", () => {
+                interactionPaused = true;
+                stopAutoplay();
+            });
+            sliderWrapper.addEventListener("mouseleave", () => {
+                interactionPaused = false;
+                startAutoplay();
+            });
+            sliderWrapper.addEventListener("focusin", () => {
+                interactionPaused = true;
+                stopAutoplay();
+            });
+            sliderWrapper.addEventListener("focusout", () => {
+                interactionPaused = false;
+                startAutoplay();
+            });
+        }
+
+        // Pause while user is actively using nav buttons (pointer/touch); resume shortly afterwards
+        const resumeAfterInteraction = () =>
+            setTimeout(() => {
+                if (!interactionPaused) startAutoplay();
+            }, 800);
+
+        [nextBtn, prevBtn].forEach((btn) => {
+            if (!btn) return;
+            btn.addEventListener("pointerdown", () => {
+                interactionPaused = true;
+                stopAutoplay();
+            });
+            btn.addEventListener("pointerup", () => {
+                interactionPaused = false;
+                resumeAfterInteraction();
+            });
+            // For keyboard users
+            btn.addEventListener("focus", () => {
+                interactionPaused = true;
+                stopAutoplay();
+            });
+            btn.addEventListener("blur", () => {
+                interactionPaused = false;
+                resumeAfterInteraction();
+            });
+        });
+
+        // Pause when page not visible to conserve resources
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) stopAutoplay();
+            else if (!interactionPaused) startAutoplay();
+        });
+
+        // Initialize and start autoplay
         moveToSlide(0);
+        startAutoplay();
     };
 
     /* ==========================
