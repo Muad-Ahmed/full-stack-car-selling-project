@@ -42,6 +42,18 @@ class LoginController extends Controller
         return redirect()->route('dashboard');
     }
 
+    public function skipVerification()
+    {
+
+        $user = auth()->user();
+
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+        }
+
+        return redirect()->route('car.create')
+            ->with('success', 'Email verified automatically for demo!');
+    }
 
     public function logout(Request $request)
     {

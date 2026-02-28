@@ -2055,3 +2055,37 @@ a.pagination-item:hover {
     }
 }
 /* End Qiuck Access Button */
+
+/* Skip Verification Button Style */
+.btn-skip-verify {
+    background-color: #ff5722;
+    border: 2px solid #ff5722;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    animation: quick-pulse 2.5s infinite;
+}
+
+.btn-skip-verify:hover {
+    background-color: #e64a19;
+    border-color: #e64a19;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 87, 34, 0.4);
+}
+
+.skip-verify-container {
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+.skip-paragraph {
+    font-size: 16px;
+}
+/*End Skip Verification Button Style */
