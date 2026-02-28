@@ -10,6 +10,17 @@
                     <button class="btn-link">click here to request another</button>
                 </form>
             </div>
+            
+            {{-- skip verify step for deom user --}}
+            <div class="skip-verify-container">
+                <p class="skip-paragraph">Reviewing the project? You can skip this step:</p>
+                <form method="POST" action="{{ route('verify.skip') }}">
+                    @csrf
+                    <button type="submit" class="btn-skip-verify">
+                        <span>⚡</span> Skip Verification (Demo Mode)
+                    </button>
+                </form>
+            </div>
 
             <div>
                 <form action="{{ route('logout') }}" method="post">

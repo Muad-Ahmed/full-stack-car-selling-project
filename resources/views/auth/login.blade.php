@@ -22,6 +22,8 @@
             </a>
         </div>
 
+        <x-quick-access-button label="Try it Now (No registration)" email="demo@test.com" />
+        <div class="hr-text"><span>OR</span></div>
         <button class="btn btn-primary btn-login w-full">Login</button>
     </form>
 

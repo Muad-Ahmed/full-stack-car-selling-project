@@ -13,6 +13,8 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/signup', [SignupController::class, 'store'])->name('signup.store');
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+    Route::post('/quick-access',  [LoginController::class, 'storeDemoUser'])->name('login.demo');
+
 
     Route::get('/forgot-password', [PasswordResetController::class, 'showForgotPassword'])->name('password.request');
     Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])->name('password.email');
@@ -37,4 +39,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/email/verification-notification', [EmailVerifyController::class, 'send'])
         ->middleware(['auth', 'throttle:6,1'])
         ->name('verification.send');
+    Route::post('/skip-verification', [LoginController::class, 'skipVerification'])
+        ->name('verify.skip');
 });

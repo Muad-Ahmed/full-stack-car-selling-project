@@ -14,6 +14,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -123,6 +124,16 @@ class DatabaseSeeder extends Seeder
                 'favouriteCars'
             )
             ->create();
+
+        // Create a demo user for quick access button
+        User::firstOrCreate(
+            ['email' => 'demo@test.com'],
+            [
+                'name' => 'Demo User',
+                'password' => bcrypt('password'),
+                'phone' => '0123456789',
+            ]
+        );
 
         // Assign real images (public/images/cars/car_main_{1..30}.jpg)
         // to the 30 cars shown on the homepage when such files exist.

@@ -1965,3 +1965,127 @@ a.pagination-item:hover {
     box-shadow: 0 4px 12px rgba(233, 88, 12, 0.3);
 }
 /*End Delete Modal */
+
+/* Start Qiuck Access Button */
+/* Container Wrapper */
+.quick-access-wrapper {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+.quick-access-wrapper p {
+    font-size: 13px;
+}
+/* Enhanced Button */
+.btn-quick-access {
+    background-color: transparent;
+    border: 2px solid #ff5722;
+    color: #ff5722;
+    padding: 12px 32px;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.1rem;
+    width: auto;
+    margin-bottom: 8px;
+    animation: quick-pulse 2s infinite;
+}
+
+.btn-quick-access:hover {
+    background-color: #ff5722;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 87, 34, 0.3);
+}
+
+/* Formatting the note below the button */
+.quick-access-note {
+    font-size: 0.8rem;
+    color: #777;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+/* The small dot icon */
+.quick-access-note .dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ff5722;
+    border-radius: 50%;
+    display: inline-block;
+    animation: dot-blink 1.5s infinite;
+}
+
+.hr-text {
+    text-align: center;
+    margin-top: -15px;
+}
+
+/* Adjusting the main login button margin */
+.btn-login {
+    margin-top: 0.5rem;
+}
+
+/* Keyframes for Animations */
+@keyframes quick-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 12px rgba(255, 87, 34, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 87, 34, 0);
+    }
+}
+
+@keyframes dot-blink {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+/* End Qiuck Access Button */
+
+/* Skip Verification Button Style */
+.btn-skip-verify {
+    background-color: #ff5722;
+    border: 2px solid #ff5722;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    animation: quick-pulse 2.5s infinite;
+}
+
+.btn-skip-verify:hover {
+    background-color: #e64a19;
+    border-color: #e64a19;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 87, 34, 0.4);
+}
+
+.skip-verify-container {
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+.skip-paragraph {
+    font-size: 16px;
+}
+/*End Skip Verification Button Style */
