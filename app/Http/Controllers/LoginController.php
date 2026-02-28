@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,6 +32,16 @@ class LoginController extends Controller
             'email' => 'The provided credentials do not match our records'
         ])->onlyInput('email');
     }
+
+    public function storeDemoUser()
+    {
+        $user = User::where('email', 'demo@test.com')->firstOrFail();
+
+        Auth::login($user);
+
+        return redirect()->route('dashboard');
+    }
+
 
     public function logout(Request $request)
     {
