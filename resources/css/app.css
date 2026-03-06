@@ -2223,4 +2223,11 @@ a.pagination-item:hover {
     color: white;
 }
 
+
+@media screen and (max-width: 768px) {
+    .ai-assistant-widget {
+        bottom: calc(2rem + 70px) !important;
+    }
+}
+
 /*End Ai-Assistant */

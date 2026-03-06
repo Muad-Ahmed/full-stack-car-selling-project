@@ -24,6 +24,13 @@
 </div>
 
 
+@push('css')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui-theme-default.css" />
+@endpush
+
 @push('js')
-@vite(['resources/css/app.css','resources/js/ai-assistant.js'])
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/botui/build/botui.js"></script>
+@vite(['resources/js/ai-assistant.js'])
 @endpush
