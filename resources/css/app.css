@@ -69,6 +69,7 @@ hr {
 .text-primary {
     color: var(--primary-color);
 }
+
 .text-error {
     color: var(--error-color);
 }
@@ -319,6 +320,7 @@ select:disabled {
 .form-group.has-error textarea {
     border-color: var(--input-border-error-color);
 }
+
 .form-group .error-message {
     display: none;
 }
@@ -366,13 +368,13 @@ select:focus {
     border-collapse: collapse;
 }
 
-.table > thead > tr > th {
+.table>thead>tr>th {
     background-color: #f4f4f4;
     padding: 0.75rem;
     text-align: left;
 }
 
-.table > tbody > tr > td {
+.table>tbody>tr>td {
     padding: 0.25rem 0.75rem;
 }
 
@@ -429,7 +431,7 @@ body.page-signup {
     align-items: stretch;
 }
 
-.navbar-nav > a {
+.navbar-nav>a {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
@@ -440,7 +442,7 @@ body.page-signup {
     transition: all 0.3s;
 }
 
-.navbar-nav > a:hover {
+.navbar-nav>a:hover {
     color: var(--primary-color);
     border-bottom-color: var(--primary-color);
 }
@@ -492,8 +494,8 @@ body.page-signup {
     list-style: none;
 }
 
-.navbar-menu .submenu > li > a,
-.navbar-menu .submenu > li button {
+.navbar-menu .submenu>li>a,
+.navbar-menu .submenu>li button {
     display: block;
     width: 100%;
     text-decoration: none;
@@ -506,8 +508,9 @@ body.page-signup {
     color: var(--primary-color);
     cursor: pointer;
 }
-.navbar-menu .submenu > li > a:hover,
-.navbar-menu .submenu > li button:hover {
+
+.navbar-menu .submenu>li>a:hover,
+.navbar-menu .submenu>li button:hover {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -704,7 +707,7 @@ main {
     flex-wrap: wrap;
 }
 
-.find-a-car-inputs > div {
+.find-a-car-inputs>div {
     width: 20%;
     padding: 0.25rem;
 }
@@ -989,13 +992,13 @@ a.pagination-item:hover {
     margin: 0;
 }
 
-.car-specifications > li {
+.car-specifications>li {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.car-specifications > li > svg {
+.car-specifications>li>svg {
     width: 18px;
 }
 
@@ -1204,7 +1207,7 @@ a.pagination-item:hover {
     flex-direction: column;
 }
 
-.search-cars-sidebar .find-a-car-inputs > div {
+.search-cars-sidebar .find-a-car-inputs>div {
     width: 100%;
 }
 
@@ -1433,7 +1436,7 @@ a.pagination-item:hover {
 }
 
 @media screen and (max-width: 480px) {
-    .find-a-car-inputs > div {
+    .find-a-car-inputs>div {
         width: 100%;
     }
 
@@ -1515,6 +1518,7 @@ a.pagination-item:hover {
         min-width: 0;
     }
 }
+
 @media (max-width: 650px) {
     .car-active-image {
         width: 100%;
@@ -1562,6 +1566,7 @@ a.pagination-item:hover {
 .logout-button:hover {
     background-color: #fef2f2;
 }
+
 /* ### */
 
 /* ### */
@@ -1679,11 +1684,13 @@ a.pagination-item:hover {
     border-color: #2563eb;
     background: #eff6ff;
 }
+
 .btn-images-icon:hover {
     color: #059669;
     border-color: #059669;
     background: #ecfdf5;
 }
+
 .btn-delete-icon:hover {
     color: #dc2626;
     border-color: #dc2626;
@@ -1696,10 +1703,12 @@ a.pagination-item:hover {
     font-size: 0.75rem;
     font-weight: 600;
 }
+
 .badge-success {
     background: #dcfce7;
     color: #166534;
 }
+
 .badge-warning {
     background: #fef9c3;
     color: #854d0e;
@@ -1710,6 +1719,7 @@ a.pagination-item:hover {
     color: #9ca3af;
     margin-top: 4px;
 }
+
 .section-padding {
     padding: 40px 0;
 }
@@ -1790,9 +1800,11 @@ a.pagination-item:hover {
         color: #a0aec0;
         margin-right: 15px;
     }
+
     .my-cars-table td[data-label="Image"]::before {
         display: none !important;
     }
+
     .my-cars-table td[data-label="Image"] {
         flex-direction: column;
         align-items: center;
@@ -1822,10 +1834,12 @@ a.pagination-item:hover {
         color: #2d3748;
         font-size: 1rem !important;
     }
+
     .my-cars-card {
         background-color: transparent;
     }
 }
+
 /*End  My Cars Section */
 
 /* Toast */
@@ -1875,11 +1889,13 @@ a.pagination-item:hover {
         transform: translateY(-20px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
     }
 }
+
 /* End Toast */
 
 /* Delete Modal */
@@ -1964,6 +1980,7 @@ a.pagination-item:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 12px rgba(233, 88, 12, 0.3);
 }
+
 /*End Delete Modal */
 
 /* Start Qiuck Access Button */
@@ -1972,9 +1989,11 @@ a.pagination-item:hover {
     margin: 1.5rem 0;
     text-align: center;
 }
+
 .quick-access-wrapper p {
     font-size: 13px;
 }
+
 /* Enhanced Button */
 .btn-quick-access {
     background-color: transparent;
@@ -2037,23 +2056,28 @@ a.pagination-item:hover {
     0% {
         box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.5);
     }
+
     70% {
         box-shadow: 0 0 0 12px rgba(255, 87, 34, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(255, 87, 34, 0);
     }
 }
 
 @keyframes dot-blink {
+
     0%,
     100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.4;
     }
 }
+
 /* End Qiuck Access Button */
 
 /* Skip Verification Button Style */
@@ -2085,7 +2109,118 @@ a.pagination-item:hover {
     border-top: 1px solid #eee;
     text-align: center;
 }
+
 .skip-paragraph {
     font-size: 16px;
 }
+
 /*End Skip Verification Button Style */
+/*Start Ai-Assistant */
+.ai-assistant-widget {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+}
+
+.ai-assistant-toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ai-assistant-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+}
+
+.ai-assistant-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 350px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.ai-assistant-window.hidden {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.ai-assistant-header {
+    padding: 1rem 1.5rem;
+    background: #2563eb;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-assistant-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+}
+
+.ai-assistant-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.botui-app-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background: #f8fafc;
+}
+
+.ai-assistant-suggestions {
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.suggestion-btn {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #475569;
+}
+
+.suggestion-btn:hover {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+/*End Ai-Assistant */

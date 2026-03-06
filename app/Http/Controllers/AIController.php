@@ -27,8 +27,6 @@ class AIController extends Controller
         Log::info("AI Chat Request: Message: {$message} | URL: {$url}");
 
         // Placeholder response
-        // In the future, this is where you'd call the Google Studio AI (Gemini) API
-        // using config('services.ai.key') or env('AI_API_KEY')
         
         $response = "This is a placeholder response until the AI API is configured. I see you are on: " . $url;
 
