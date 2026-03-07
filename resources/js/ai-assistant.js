@@ -42,7 +42,7 @@
                 isInitialized = true;
 
                 botui.message.add({
-                    content: 'Hello! How can I help you today?'
+                    content: 'Hello 👋 I can help you navigate this website. What would you like to do?'
                 }).then(() => {
                     return askUser();
                 });

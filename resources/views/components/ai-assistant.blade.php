@@ -21,9 +21,9 @@
             <bot-ui></bot-ui>
         </div>
         <div class="ai-assistant-suggestions" id="ai-suggestions">
-            <button class="suggestion-btn" data-query="How to buy a car?">How to buy a car?</button>
-            <button class="suggestion-btn" data-query="Can I sell my car here?">Sell my car</button>
-            <button class="suggestion-btn" data-query="What's the best price?">Best price?</button>
+            <button class="suggestion-btn" data-query="How can I buy a car on this website?">🔑 How to buy a car?</button>
+            <button class="suggestion-btn" data-query="How do I list my car for sale?">🚗 Sell my car</button>
+            <button class="suggestion-btn" data-query="Where can I search for cars?">🔍 Find cars</button>
         </div>
     </div>
 </div>
