@@ -53,5 +53,5 @@
 
 
     {{ $slot }}
-
+    <x-ai-assistant />
 </x-base-layout>
