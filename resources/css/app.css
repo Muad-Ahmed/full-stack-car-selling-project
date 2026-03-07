@@ -2160,11 +2160,19 @@ a.pagination-item:hover {
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.botui-container {
+    width: 98% !important;
+}
+
 @media (max-width: 768px) {
     .ai-assistant-window {
         width: 340px;
         height: 500px;
 
+    }
+
+    .botui-container {
+        width: 92% !important;
     }
 }
 

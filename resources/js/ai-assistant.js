@@ -112,6 +112,12 @@
                     initBotUI();
                 }
 
+                // Hide the suggestions container
+                const suggestionsContainer = document.getElementById('ai-suggestions');
+                if (suggestionsContainer) {
+                    suggestionsContainer.style.display = 'none';
+                }
+
                 botui.message.add({
                     human: true,
                     content: query
