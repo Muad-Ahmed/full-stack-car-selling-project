@@ -10,30 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install Composer Dependencies
-        run: composer install --no-dev --prefer-dist --no-progress
-
-      - name: Install Node Dependencies
-        run: npm ci
-
-      - name: Build Assets
-        run: npm run build
-
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -41,14 +19,52 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
           script: |
-            cd /var/www/car-selling
+            set -e
 
+            cd /var/www/cars
+
+            # Maintenance mode — suppress error if artisan is unavailable
+            php artisan down --retry=5 || true
+
+            # Pull latest code from main
             git pull origin main
 
-            composer install --no-dev --optimize-autoloader
+            # ---------------------------------------------------------------
+            # Composer: wipe vendor first to avoid the "SebastianBergmann\Version
+            # not found" error that occurs when Composer tries to run its
+            # pre-package-uninstall scripts against a partially-broken vendor dir.
+            # ---------------------------------------------------------------
+            rm -rf vendor
 
-            php artisan migrate --force
+            export COMPOSER_ALLOW_SUPERUSER=1
+            composer install \
+              --no-dev \
+              --no-interaction \
+              --prefer-dist \
+              --optimize-autoloader
 
+            # ---------------------------------------------------------------
+            # Frontend assets — build on the server after the pull so the
+            # manifest matches the newly deployed code exactly.
+            # ---------------------------------------------------------------
+            npm ci --prefer-offline
+            npm run build
+
+            # Database migrations
+            php artisan migrate:fresh --seed --force
+
+            # Clear and rebuild all Laravel caches
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            php artisan event:cache
+
+            # Fix storage permissions so Nginx/PHP-FPM can write
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
+
+            # Bring the application back online
+            php artisan up

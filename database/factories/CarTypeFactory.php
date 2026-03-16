@@ -16,8 +16,10 @@ class CarTypeFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create();
+
         return [
-            'name' => fake()->randomElement(['Sedan', 'SUV', 'Truck', 'Van', 'Coupe', 'Crossover']),
+            'name' => $faker->randomElement(['Sedan', 'SUV', 'Truck', 'Van', 'Coupe', 'Crossover']),
         ];
     }
 }
