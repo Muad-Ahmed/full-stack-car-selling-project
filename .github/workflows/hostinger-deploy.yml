@@ -1,8 +1,9 @@
-name: HostingerDeploy
+name: VPS Auto Deploy
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -22,13 +23,13 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install composer dependencies
+      - name: Install Composer Dependencies
         run: composer install --no-dev --prefer-dist --no-progress
 
-      - name: Install node dependencies
+      - name: Install Node Dependencies
         run: npm ci
 
-      - name: Build assets
+      - name: Build Assets
         run: npm run build
 
       - name: Deploy to VPS
@@ -38,6 +39,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
+          script_stop: true
           script: |
             cd /var/www/car-selling
 
