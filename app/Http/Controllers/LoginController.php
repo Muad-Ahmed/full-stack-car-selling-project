@@ -28,18 +28,20 @@ class LoginController extends Controller
                 ->with('success', 'Welcome Back, ' . Auth::user()->name);
         }
 
-        return  redirect()->back()->withErrors([
+        return redirect()->back()->withErrors([
             'email' => 'The provided credentials do not match our records'
         ])->onlyInput('email');
     }
 
-    public function storeDemoUser()
+    public function storeDemoUser(Request $request)
     {
         $user = User::where('email', 'demo@test.com')->firstOrFail();
 
         Auth::login($user);
 
-        return redirect()->route('dashboard');
+        $request->session()->regenerate();
+
+        return redirect()->route('home')->with('success', 'Welcome Back, ' . $user->name);
     }
 
     public function skipVerification()
