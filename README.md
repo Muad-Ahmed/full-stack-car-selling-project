@@ -1,59 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Full-Stack Car Marketplace Application
+
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=flat-square&logo=laravel)](https://laravel.com)
+[![Pest](https://img.shields.io/badge/Pest-v4.x-02D497?style=flat-square&logo=pest)](https://pestphp.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
+A high-performance, feature-rich car marketplace platform built with **Laravel 12** and **Blade**. This application facilitates seamless buyer-seller interactions, advanced search capabilities, and integrates modern AI for an enhanced user experience.
+
+🔗 **Live Demo:** [https://cars.muad.pro](https://cars.muad.pro)
+
+---
+
+## ✨ Key Features
+
+- ** Secure Authorization:** Robust access control using Laravel **Gates & Policies** to manage seller and buyer workflows.
+- ** Advanced Search & Filtering:** Highly optimized car search with dynamic filters for price, model, mileage, and more.
+- ** AI Automotive Concierge:** Integrated chatbot powered by **Google Gemini 2.5 Flash** to assist users with site navigation and inquiries.
+- ** Multi-Image Optimization:** Seamless multi-image uploads with background processing and storage optimization.
+- ** Personalized Dashboards:** Dedicated dashboards for Sellers (to manage listings) and Users (to track activity).
+- ** Watchlist System:** Users can save their favorite vehicles to a personalized watchlist.
+- ** Social Authentication:** Quick login via **Google & Facebook** using Laravel Socialite.
+- ** CI/CD Ready:** Configured for automated deployment to **VPS** with continuous integration.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Backend:** PHP 8.2+ | Laravel 12
+- **Frontend:** Blade Templating | Tailwind CSS 4.0 | Vite
+- **AI Integration:** Google Gemini API (2.5 Flash)
+- **Testing:** Pest PHP (Feature & E2E Testing)
+- **Auth:** Laravel Socialite (OAuth)
+- **Deployment:** VPS | GitHub Actions CI/CD
+
+---
+
+## 🚀 Installation & Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Muad-Ahmed/full-stack-car-selling-project.git
+   cd full-stack-car-selling-project
+   ```
+
+2. **Run the setup script:** (Automated installation)
+   ```bash
+   composer run setup
+   ```
+   *This command handles composer/npm installs, `.env` creation, key generation, and migrations.*
+
+3. **Configure Environment:**
+   Update your `.env` file with these essential keys:
+   ```env
+   GOOGLE_CLIENT_ID=your_id
+   GOOGLE_CLIENT_SECRET=your_secret
+   FACEBOOK_CLIENT_ID=your_id
+   FACEBOOK_CLIENT_SECRET=your_secret
+   GEMINI_API_KEY=your_key
+   ```
+
+4. **Start Development Server:**
+   ```bash
+   composer run dev
+   ```
+
+---
+
+## 🧪 Testing
+
+We prioritize reliability using **Pest PHP** for both Feature and End-to-End testing.
+
+```bash
+# Run all tests
+composer run test
+```
+
+---
+
+## 📄 License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+---
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+    Made by <a href="https://github.com/Muad-Ahmed">Muad Ahmed</a>
 </p>
-
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
